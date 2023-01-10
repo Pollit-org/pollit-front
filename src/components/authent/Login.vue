@@ -17,7 +17,7 @@ const gogleSigninCallback = (response) => {
             rounded="pill">
             Login with google
         </v-btn> -->
-        <GoogleLogin :callback="gogleSigninCallback" prompt auto-login/>
+        <GoogleLogin :callback="gogleSigninCallback"/>
         <v-divider class="my-5"></v-divider>
         <v-form
             class="px-5"
