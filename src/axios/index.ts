@@ -2,8 +2,8 @@ import axios, { AxiosError } from 'axios';
 import router from '@/router';
 
 const axiosPollit = axios.create({
-  // baseURL: 'https://dev.auth.pollit.me',
-  baseURL: 'https://localhost:7019',
+  baseURL: 'https://dev.api.pollit.me',
+  // baseURL: 'https://localhost:7019',
 });
 
   const unauthorizedResponseInterceptor = (error: AxiosError) => {
