@@ -1,23 +1,44 @@
 <script setup lang="ts">
-const gogleSigninCallback = (response) => {
-  // This callback will be triggered when the user selects or login to
-  // his Google account from the popup
-  console.log("Handle the response", response)
-}
+import {useCodeClient} from "vue3-google-signin";
+import googleIcon from "../icons/GoogleLogo.vue";
+import { axiosPollit } from "@/axios";
+
+const handleOnSuccess = async (response: any) => {
+  console.log("Code: ", response.code);
+  console.log("Whole response: ", JSON.stringify(response));
+
+  const result = await axiosPollit.post("auth/signin/google", { code: response.code });
+
+  console.log(result);
+};
+
+const handleOnError = (errorResponse: any) => {
+  console.log("Error: ", errorResponse);
+};
+
+const { isReady, login } = useCodeClient({
+  onSuccess: handleOnSuccess,
+  onError: handleOnError,
+  scope: "email https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.birthday.read",  
+  // other options
+});
+
+
 </script>
 
 <template>
   <v-container class="fill-height">
     <v-responsive max-width="344" class="d-flex align-center text-center fill-height mx-auto">
         <h1 class="my-8">Login</h1>
-        <!-- <v-btn 
+        <v-btn 
             class="my-5"
-            prepend-icon="mdi-cloud-upload"
+            :prepend-icon="googleIcon"
             variant="outlined"
-            rounded="pill">
+            rounded="pill"
+            @click="() => login()">
             Login with google
-        </v-btn> -->
-        <GoogleLogin :callback="gogleSigninCallback"/>
+        </v-btn>
+
         <v-divider class="my-5"></v-divider>
         <v-form
             class="px-5"
