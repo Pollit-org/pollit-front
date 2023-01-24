@@ -15,12 +15,6 @@ const authorizationHeaderInterceptor = async (request: AxiosRequestConfig) => {
     if (accessToken === null)
       return request;
 
-    // const fiveMinutesLaterFromNow = new Date(Date.now() + 5 * 60 * 1000);
-    // const accessTokenExpirationDate = new Date(accessToken.expiresAtUtc * 1000);
-    // if (accessTokenExpirationDate < fiveMinutesLaterFromNow) {
-    //   await store.dispatch(ActionTypes.SIGNIN_FROM_REFRESH_TOKEN);
-    // }
-
     // @ts-ignore
     // eslint-disable-next-line no-param-reassign
     request.headers.Authorization = `Bearer ${accessToken}`;
