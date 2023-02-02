@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import GoogleSignin from 'components/authent/GoogleSignin.vue'
 import CredentialsSigninForm from 'components/authent/CredentialsSigninForm.vue'
-import { useConnectedUserStore } from 'src/stores/connected-user-store';
 </script>
 
 <template>
-  <q-layout class="flex justify-center text-center q-mx-none q-px-none">
+  <q-page class="flex justify-center text-center q-mx-none q-px-none">
     <div class="self-center" style="width: 80%; max-width: 344px;">
         <h1 class="q-mb-lg q-mt-none q-pt-none">Signin</h1>
         <google-signin @on-signin-success="onSigninSuccess"/>
@@ -23,5 +22,5 @@ import { useConnectedUserStore } from 'src/stores/connected-user-store';
             <small>Signup</small>
         </q-btn>
     </div>
-  </q-layout>
+  </q-page>
 </template>

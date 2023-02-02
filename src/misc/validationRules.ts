@@ -1,1 +1,1 @@
-export const requiredField = (field: string) => field != null && field !== "" ? true : "This field is required";
+export const requiredField = (field: string) => field != null && field !== '' ? true : 'This field is required';

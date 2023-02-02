@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import PermanentUserNameForm from '@/components/authent/PermanentUserNameForm.vue';
+import PermanentUserNameForm from 'src/components/authent/PermanentUserNameForm.vue';
+import { useConnectedUserStore } from 'src/stores/connected-user-store';
+
+const connectedUserStore = useConnectedUserStore();
+
 </script>
 
 <template>
-  <v-container class="fill-height">
-    <v-responsive max-width="688" class="d-flex align-center text-center fill-height mx-auto">
-        <h1 class="mb-8">Choose a user name</h1>
+    <q-page class="flex justify-center text-center q-mx-none q-px-none">
+    <div class="self-center" style="width: 80%; max-width: 344px;">
+        <h1 class="q-mb-lg q-mt-none q-pt-none">Choose a user name</h1>
         <span>It will be visible by other users.<br>It cannot be changed.</span>
-        <permanent-user-name-form class="px-5 mt-8"/>
-    </v-responsive>
-  </v-container>
+        <permanent-user-name-form class="q-px-md q-mt-lg"/>
+        <q-btn @click="connectedUserStore.signout">Signout</q-btn>
+    </div>
+  </q-page>
 </template>

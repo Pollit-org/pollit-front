@@ -1,26 +1,24 @@
 <script setup lang="ts">
-import {useCodeClient} from "vue3-google-signin";
-import { useConnectedUserStore } from "stores/connected-user-store";
-import googleIcon from "../icons/GoogleLogo.vue";
-import toto from "src/assets/Google_G_Logo.svg"
+import {ImplicitFlowErrorResponse, ImplicitFlowSuccessResponse, useCodeClient} from 'vue3-google-signin';
+import { useConnectedUserStore } from 'stores/connected-user-store';
 
 const connectedUserStore = useConnectedUserStore();
 
 const emit = defineEmits(['onSigninSuccess'])
 
-const handleOnSuccess = async (response: any) => {
+const handleOnSuccess = async (response: ImplicitFlowSuccessResponse) => {
   await connectedUserStore.signinWithGoogle(response.code);
   emit('onSigninSuccess')
 };
 
-const handleOnError = (errorResponse: any) => {
-  console.log("Error: ", errorResponse);
+const handleOnError = (errorResponse: ImplicitFlowErrorResponse) => {
+  console.log('Error: ', errorResponse);
 };
 
 const { login } = useCodeClient({
   onSuccess: handleOnSuccess,
   onError: handleOnError,
-  scope: "email https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.birthday.read",  
+  scope: 'email https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.birthday.read',  
 });
 
 </script>

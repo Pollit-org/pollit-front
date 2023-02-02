@@ -1,4 +1,4 @@
-import { route as router } from 'quasar/wrappers';
+import { useConnectedUserStore } from 'src/stores/connected-user-store';
 import {
   createMemoryHistory,
   createRouter,
@@ -21,5 +21,22 @@ const createHistory = process.env.SERVER
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
+
+  Router.beforeEach((to, from, next) => {
+    const connectedUserStore = useConnectedUserStore();
+
+    for (const req of to.meta.userRequirements ?? []) {
+      if (!req(connectedUserStore))
+        next ({ name: 'Home'})
+    }
+    
+    if (connectedUserStore.user?.claims?.HasTemporaryUserName === "False" && to.name == 'SetPermanentUserName')
+      next(from)
+    else if (connectedUserStore.user?.claims?.HasTemporaryUserName === "True" && to.name != 'SetPermanentUserName')
+      next({ name: 'SetPermanentUserName' });
+    else
+      next();
+  })
+  
 
   export default Router;

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useConnectedUserStore } from "stores/connected-user-store";
-import { ref } from "vue";
-import { requiredField } from "src/misc/validationRules";
+import { useConnectedUserStore } from 'stores/connected-user-store';
+import { ref } from 'vue';
+import { requiredField } from 'src/misc/validationRules';
 
 const connectedUserStore = useConnectedUserStore();
 
-let emailOrUserName = ref("");
-let password = ref("");
+let emailOrUserName = ref('');
+let password = ref('');
 
 let formIsValid = ref(true)
 

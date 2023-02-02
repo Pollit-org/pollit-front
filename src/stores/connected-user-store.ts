@@ -1,11 +1,12 @@
-import { axiosPollit } from "src/axios";
-import { defineStore, type _GettersTree } from "pinia";
+import { axiosPollit } from 'src/axios';
+import { defineStore, Store, type _GettersTree } from 'pinia';
 import jwtDecode from 'jwt-decode';
 
 interface ConnectedUserActions {
     signinWithCredentials: (emailOrUserName: string, password: string) => Promise<void> | void
     signinWithGoogle: (code: string) => Promise<void> | void,
-    setPermanentUserName: (userName: string) => Promise<void> | void
+    setPermanentUserName: (userName: string) => Promise<void> | void,
+    signout: () => Promise<void> | void
 }
 
 interface ConnectedUserState {
@@ -37,16 +38,19 @@ function buildUser (accessToken: string, refreshToken: string): User {
     }
 }
 
-export const useConnectedUserStore = defineStore<string, ConnectedUserState, ConnectedUserGetters, ConnectedUserActions>("ConnectedUserStore", {
+export type ConnectedUserStore = Store<string, ConnectedUserState, ConnectedUserGetters, ConnectedUserActions>;
+
+export const useConnectedUserStore = defineStore<string, ConnectedUserState, ConnectedUserGetters, ConnectedUserActions>('ConnectedUserStore', {
     state: () => {
         return {
             user: null
         }
     },
     persist: {
-        paths: ["user.accessToken", "user.refreshToken"],
-        afterRestore: (ctx: any) => {            
+        paths: ['user.accessToken', 'user.refreshToken'],
+        afterRestore: (ctx) => {            
             if (ctx.store.user?.accessToken == null) {
+                ctx.store.user = null;
                 return;
             }
             ctx.store.user = buildUser(ctx.store.user.accessToken, ctx.store.user.refreshToken);
@@ -55,22 +59,31 @@ export const useConnectedUserStore = defineStore<string, ConnectedUserState, Con
     },
     actions: {
         async signinWithCredentials(emailOrUserName: string, password: string) {
-            const {accessToken, refreshToken} = (await axiosPollit.post("auth/signin", { emailOrUserName, password })).data;
+            const {accessToken, refreshToken} = (await axiosPollit.post('auth/signin', { emailOrUserName, password })).data;
             this.user = buildUser(accessToken, refreshToken);
-            if (this.user.claims.HasTemporaryUserName == "True")
-                this.router.push({ name: "SetPermanentUserName" })
+
+            if (this.user.claims.HasTemporaryUserName == 'True')
+                this.router.push({ name: 'SetPermanentUserName' })
+            else
+                this.router.push({ name: 'Home' })
         },
         async signinWithGoogle(code: string) {
-            const {accessToken, refreshToken} = (await axiosPollit.post("auth/signin/google", { code })).data;
+            const {accessToken, refreshToken} = (await axiosPollit.post('auth/signin/google', { code })).data;
             this.user = buildUser(accessToken, refreshToken);
-            console.log(JSON.stringify(this.user));
             
-            if (this.user.claims.HasTemporaryUserName == "True")
-                this.router.push({ name: "SetPermanentUserName" })
+            if (this.user.claims.HasTemporaryUserName == 'True')
+                this.router.push({ name: 'SetPermanentUserName' })
+            else
+                this.router.push({ name: 'Home' })
         },
         async setPermanentUserName(userName: string) {            
             await axiosPollit.patch(`users/${this.user?.claims.UserId}/userName`, {userName});
-            this.router.push({ name: "Home" })
+            this.user!.claims.HasTemporaryUserName == "False"; // todo: signin again with refresh token instead of this dirty trixx
+            this.router.push({ name: 'Home' })
+        },
+        async signout() {
+            this.user = null;
+            this.router.push({ name: 'Home' })
         }
     },
     getters: {

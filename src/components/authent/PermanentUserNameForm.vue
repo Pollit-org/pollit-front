@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { axiosPollit } from "@/axios";
-import {useConnectedUserStore} from "@/stores/ConnectedUserStore";
-import { ref } from "@vue/reactivity";
-import router from "@/router";
+import {useConnectedUserStore} from 'stores/connected-user-store';
+import { ref } from 'vue';
 
 const connectedUserStore = useConnectedUserStore();
 
-let userName = ref("");
+let userName = ref('');
 
 const setPermanentUserName = async () => {
     await connectedUserStore.setPermanentUserName(userName.value);    
@@ -15,28 +13,30 @@ const setPermanentUserName = async () => {
 </script>
 
 <template>
-<v-form
+<q-form
     ref="form"
     v-model="valid"
-    lazy-validation
 >
-    <v-text-field
-        variant="solo"
+    <q-input
+        filled
+        color="light"
         v-model="userName"
         :readonly="loading"
         :rules="[required]"
-        class="mb-1 rounded-text-input"
+        class="q-mb-xs"
         clearable
         label="User name"
         >
-    </v-text-field>
-    <v-btn
-        class="px-10"
+    </q-input>
+    <q-btn
+        class="q-px-lg"
         color="positive"
-        rounded="pill"
+        text-color="dark"
+        rounded
+        outlined
         @click="setPermanentUserName"
     >
         Set user name
-    </v-btn>
-</v-form>
+    </q-btn>
+</q-form>
 </template>
