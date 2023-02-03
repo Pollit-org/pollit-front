@@ -1,18 +1,67 @@
 <template>
   <q-layout view="hHh lpr lfr">
-
     <q-header reveal bordered class="bg-banner text-white">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="desktop-hide" />
-
         <q-toolbar-title>
           Pollit
         </q-toolbar-title>
+        <q-btn-dropdown v-if="connectedUserStore.user != null" color="primary" label="MrFlow" icon="person" no-caps>
+          <q-list>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <span class="material-icons-outlined"></span>
+              <q-item-section avatar>
+                  <q-icon name="question_answer" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Inbox</q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section avatar>
+                  <q-icon name="settings"/>
+                </q-item-section>
+              <q-item-section>
+                <q-item-label>Settings</q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item clickable v-close-popup @click="connectedUserStore.signout">
+              <q-item-section avatar>
+                  <q-icon name="logout"/>
+              </q-item-section>
+              <q-item-section>
+                Signout
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+        <q-btn v-else rounded outline class="q-mr-xl" @click="signin">
+          Sign in
+        </q-btn>
+
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" overlay bordered>
-      <!-- drawer content -->
+    <q-drawer v-model="leftDrawerOpen" side="left" show-if-above bordered>
+      <q-scroll-area class="fit">
+          <q-list>
+
+            <template v-for="(menuItem, index) in menuList" :key="index">
+              <q-item clickable :active="menuItem.label === 'Outbox'" v-ripple>
+                <q-item-section avatar>
+                  <q-icon :name="menuItem.icon" />
+                </q-item-section>
+                <q-item-section>
+                  {{ menuItem.label }}
+                </q-item-section>
+              </q-item>
+              <q-separator :key="'sep' + index"  v-if="menuItem.separator" />
+            </template>
+
+          </q-list>
+        </q-scroll-area>
     </q-drawer>
 
     <q-page-container>
@@ -22,19 +71,62 @@
   </q-layout>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
+import { useQuasar } from 'quasar'
+import { useConnectedUserStore } from "src/stores/connected-user-store";
+import Router from 'src/router';
 
-export default {
-  setup() {
-    const leftDrawerOpen = ref(true)
+const connectedUserStore = useConnectedUserStore();
 
-    return {
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
-    }
+const signin = () => {
+    Router.push({ name: 'Signin'})
+}
+
+const menuList = [
+  {
+    icon: 'inbox',
+    label: 'Menu 1',
+    separator: true
+  },
+  {
+    icon: 'send',
+    label: 'Menu 2',
+    separator: false
+  },
+  {
+    icon: 'delete',
+    label: 'Menu 3',
+    separator: false
+  },
+  {
+    icon: 'error',
+    label: 'Menu 4',
+    separator: true
+  },
+  {
+    icon: 'settings',
+    label: 'Menu 5',
+    separator: false
+  },
+  {
+    icon: 'feedback',
+    label: 'Menu 6',
+    separator: false
+  },
+  {
+    icon: 'help',
+    iconColor: 'primary',
+    label: 'Menu 7',
+    separator: false
   }
+];
+
+const $q = useQuasar()
+
+const leftDrawerOpen = ref($q.screen.width < 1023?false:true)
+
+const toggleLeftDrawer = () => {
+    leftDrawerOpen.value = !leftDrawerOpen.value
 }
 </script>
