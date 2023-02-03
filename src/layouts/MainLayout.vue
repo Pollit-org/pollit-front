@@ -6,7 +6,7 @@
         <q-toolbar-title>
           Pollit
         </q-toolbar-title>
-        <q-btn-dropdown v-if="connectedUserStore.user != null" color="primary" label="MrFlow" icon="person" no-caps>
+        <q-btn-dropdown v-if="connectedUserStore.user != null" color="primary" :label="connectedUserStore.user.claims.UserName" icon="person" no-caps>
           <q-list>
             <q-item clickable v-close-popup @click="onItemClick">
               <span class="material-icons-outlined"></span>
