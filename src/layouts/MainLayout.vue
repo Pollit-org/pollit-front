@@ -80,7 +80,11 @@ import PollitToolbarTitle from './components/PollitToolbarTitle.vue';
 const connectedUserStore = useConnectedUserStore();
 
 const signin = () => {
-    Router.push({ name: 'Signin'})
+  Router.push({ name: 'Signin' })
+}
+
+const home_page = () => {
+  Router.push({ name: 'Home' })
 }
 
 const menuList = [
@@ -124,9 +128,9 @@ const menuList = [
 
 const $q = useQuasar()
 
-const leftDrawerOpen = ref($q.screen.width < 1023?false:true)
+const leftDrawerOpen = ref($q.screen.width < 1023 ? false : true)
 
 const toggleLeftDrawer = () => {
-    leftDrawerOpen.value = !leftDrawerOpen.value
+  leftDrawerOpen.value = !leftDrawerOpen.value
 }
 </script>
