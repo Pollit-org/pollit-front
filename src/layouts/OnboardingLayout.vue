@@ -3,9 +3,7 @@
 
     <q-header reveal bordered class="bg-banner text-white">
       <q-toolbar>
-        <q-toolbar-title>
-          Pollit
-        </q-toolbar-title>
+        <pollit-toolbar-title/>
       </q-toolbar>
     </q-header>
 
@@ -16,5 +14,7 @@
   </q-layout>
 </template>
 
-<script>
+<script setup>
+import PollitToolbarTitle from './components/PollitToolbarTitle.vue';
+
 </script>
