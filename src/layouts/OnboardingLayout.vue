@@ -1,9 +1,9 @@
 <template>
-  <q-layout view="hHh lpr lfr">
-
-    <q-header reveal bordered class="bg-banner text-white">
+  <q-layout view="hHh Lpr fff">
+    <q-header bordered class="bg-banner text-white">
       <q-toolbar>
-        <pollit-toolbar-title/>
+        <pollit-toolbar-title />
+        <q-space></q-space>
       </q-toolbar>
     </q-header>
 

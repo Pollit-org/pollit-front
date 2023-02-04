@@ -1,16 +1,17 @@
 <template>
-  <q-layout view="hHh lpR fff">
-    <q-header reveal bordered class="bg-banner text-white">
-      <q-toolbar class="q-pl-none">
+  <q-layout view="hHh Lpr fff">
+    <q-header bordered class="bg-primary text-white">
+      <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="desktop-hide" />
-        <pollit-toolbar-title/>
-        <q-space/>
-        <q-btn-dropdown v-if="connectedUserStore.user != null" color="primary" :label="connectedUserStore.user.claims.UserName" icon="person" no-caps>
+        <pollit-toolbar-title />
+        <q-space />
+        <q-btn-dropdown v-if="connectedUserStore.user != null" color="primary"
+          :label="connectedUserStore.user.claims.UserName" icon="person" no-caps>
           <q-list>
             <q-item clickable v-close-popup @click="onItemClick">
               <span class="material-icons-outlined"></span>
               <q-item-section avatar>
-                  <q-icon name="question_answer" />
+                <q-icon name="question_answer" />
               </q-item-section>
               <q-item-section>
                 <q-item-label>Inbox</q-item-label>
@@ -19,8 +20,8 @@
 
             <q-item clickable to="/account-settings" class="no-link-style">
               <q-item-section avatar>
-                  <q-icon name="settings"/>
-                </q-item-section>
+                <q-icon name="settings" />
+              </q-item-section>
               <q-item-section>
                 <q-item-label>Settings</q-item-label>
               </q-item-section>
@@ -28,7 +29,7 @@
 
             <q-item clickable v-close-popup @click="connectedUserStore.signout">
               <q-item-section avatar>
-                  <q-icon name="logout"/>
+                <q-icon name="logout" />
               </q-item-section>
               <q-item-section>
                 Signout
@@ -36,7 +37,7 @@
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <q-btn v-else rounded outline class="q-mr-xl" @click="signin">
+        <q-btn v-else rounded outline @click="signin">
           Sign in
         </q-btn>
 
@@ -45,24 +46,26 @@
 
     <q-drawer v-model="leftDrawerOpen" side="left" show-if-above bordered>
       <q-scroll-area class="fit">
-          <q-list>
+        <q-list>
 
-            <template v-for="(menuItem, index) in menuList" :key="index">
-              <q-item clickable :active="menuItem.label === 'Outbox'" v-ripple>
-                <q-item-section avatar>
-                  <q-icon :name="menuItem.icon" />
-                </q-item-section>
-                <q-item-section>
-                  {{ menuItem.label }}
-                </q-item-section>
-              </q-item>
-              <q-separator :key="'sep' + index"  v-if="menuItem.separator" />
-            </template>
+          <template v-for="(menuItem, index) in menuList" :key="index">
+            <q-item clickable :active="menuItem.label === 'Outbox'" v-ripple>
+              <q-item-section avatar>
+                <q-icon :name="menuItem.icon" />
+              </q-item-section>
+              <q-item-section>
+                {{ menuItem.label }}
+              </q-item-section>
+            </q-item>
+            <q-separator :key="'sep' + index" v-if="menuItem.separator" />
+          </template>
 
-          </q-list>
-        </q-scroll-area>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
-
+    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
+      <!-- drawer content -->
+    </q-drawer>
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -81,10 +84,6 @@ const connectedUserStore = useConnectedUserStore();
 
 const signin = () => {
   Router.push({ name: 'Signin' })
-}
-
-const home_page = () => {
-  Router.push({ name: 'Home' })
 }
 
 const menuList = [

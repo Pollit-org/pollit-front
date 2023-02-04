@@ -16,5 +16,6 @@
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "[vue]": {
     "editor.defaultFormatter": "octref.vetur"
-  }
+  },
+  "vue3snippets.enable-compile-vue-file-on-did-save-code": true
 }

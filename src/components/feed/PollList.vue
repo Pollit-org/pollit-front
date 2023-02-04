@@ -16,7 +16,7 @@ const onLoadRef = (index, done) => {
 <template>
   <div class="q-pa-md">
     <q-infinite-scroll @load="onLoadRef" :offset="250">
-      <poll-card></poll-card>
+      <poll-card v-for="(item, index) in items" :key="index" />
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
           <q-spinner-dots color="primary" size="40px" />
