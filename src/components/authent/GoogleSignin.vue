@@ -21,6 +21,13 @@ const { login } = useCodeClient({
   scope: 'email https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.birthday.read',  
 });
 
+interface Props {
+  label?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {label: 'Sign in with Google'})
+
+
 </script>
 
 <template>
@@ -29,6 +36,6 @@ const { login } = useCodeClient({
     outline
     @click="() => login()">
     <q-icon name="svguse:icons/google.svg#classic" size="18px" class="q-mr-xs"></q-icon>
-    Sign in with google
+    {{ props.label }}
   </q-btn>
 </template>

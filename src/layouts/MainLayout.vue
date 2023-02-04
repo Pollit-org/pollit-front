@@ -1,11 +1,10 @@
 <template>
-  <q-layout view="hHh lpr lfr">
+  <q-layout view="hHh lpR fff">
     <q-header reveal bordered class="bg-banner text-white">
-      <q-toolbar>
+      <q-toolbar class="q-pl-none">
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="desktop-hide" />
-        <q-toolbar-title>
-          Pollit
-        </q-toolbar-title>
+        <pollit-toolbar-title/>
+        <q-space/>
         <q-btn-dropdown v-if="connectedUserStore.user != null" color="primary" :label="connectedUserStore.user.claims.UserName" icon="person" no-caps>
           <q-list>
             <q-item clickable v-close-popup @click="onItemClick">
@@ -76,6 +75,7 @@ import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { useConnectedUserStore } from "src/stores/connected-user-store";
 import Router from 'src/router';
+import PollitToolbarTitle from './components/PollitToolbarTitle.vue';
 
 const connectedUserStore = useConnectedUserStore();
 

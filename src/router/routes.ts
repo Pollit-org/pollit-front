@@ -39,6 +39,14 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
+        path: 'signup',
+        name: 'Signup',
+        component: () => import('pages/SignupPage.vue'),
+        meta: {
+          userRequirements: [userNotSignedIn]
+        }
+      },
+      {
         path: 'setUserName',
         name: 'SetPermanentUserName',
         component: () => import('pages/SetPermanentUserNamePage.vue'),

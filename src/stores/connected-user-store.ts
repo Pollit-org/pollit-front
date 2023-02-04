@@ -4,6 +4,7 @@ import jwtDecode from 'jwt-decode';
 
 interface ConnectedUserActions {
     signinWithCredentials: (emailOrUserName: string, password: string) => Promise<void> | void
+    signupWithCredentials: (email: string, userName: string, password: string) => Promise<void> | void
     signinWithGoogle: (code: string) => Promise<void> | void,
     setPermanentUserName: (userName: string) => Promise<void> | void,
     signout: () => Promise<void> | void
@@ -61,6 +62,17 @@ export const useConnectedUserStore = defineStore<string, ConnectedUserState, Con
         async signinWithCredentials(emailOrUserName: string, password: string) {
             const {accessToken, refreshToken} = (await axiosPollit.post('auth/signin', { emailOrUserName, password })).data;
             this.user = buildUser(accessToken, refreshToken);
+
+            if (this.user.claims.HasTemporaryUserName == 'True')
+                this.router.push({ name: 'SetPermanentUserName' })
+            else
+                this.router.push({ name: 'Home' })
+        },
+        async signupWithCredentials(email: string, userName: string, password: string) {
+            await axiosPollit.post('auth/signup', { email, userName, password });
+            const {accessToken, refreshToken} = (await axiosPollit.post('auth/signin', { emailOrUserName: email, password })).data;
+            this.user = buildUser(accessToken, refreshToken);
+            debugger
 
             if (this.user.claims.HasTemporaryUserName == 'True')
                 this.router.push({ name: 'SetPermanentUserName' })
