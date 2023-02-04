@@ -30,9 +30,9 @@ const createHistory = process.env.SERVER
         next ({ name: 'Home'})
     }
     
-    if (connectedUserStore.user?.claims?.HasTemporaryUserName === "False" && to.name == 'SetPermanentUserName')
+    if (connectedUserStore.user?.claims?.HasTemporaryUserName === 'False' && to.name == 'SetPermanentUserName')
       next(from)
-    else if (connectedUserStore.user?.claims?.HasTemporaryUserName === "True" && to.name != 'SetPermanentUserName')
+    else if (connectedUserStore.user?.claims?.HasTemporaryUserName === 'True' && to.name != 'SetPermanentUserName')
       next({ name: 'SetPermanentUserName' });
     else
       next();

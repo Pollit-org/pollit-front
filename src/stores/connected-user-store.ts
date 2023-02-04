@@ -90,7 +90,7 @@ export const useConnectedUserStore = defineStore<string, ConnectedUserState, Con
         },
         async setPermanentUserName(userName: string) {            
             await axiosPollit.patch(`users/${this.user?.claims.UserId}/userName`, {userName});
-            this.user!.claims.HasTemporaryUserName == "False"; // todo: signin again with refresh token instead of this dirty trixx
+            this.user!.claims.HasTemporaryUserName == 'False'; // todo: signin again with refresh token instead of this dirty trixx
             this.router.push({ name: 'Home' })
         },
         async signout() {

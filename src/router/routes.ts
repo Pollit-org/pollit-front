@@ -12,7 +12,7 @@ declare module 'vue-router' {
 
 const userSignedIn : UserRequirement = store => store.user != null;
 const userNotSignedIn : UserRequirement = store => store.user == null;
-const userHasTemporaryUserName : UserRequirement = store => store.user?.claims.HasTemporaryUserName == "True";
+const userHasTemporaryUserName : UserRequirement = store => store.user?.claims.HasTemporaryUserName == 'True';
 
 const routes: RouteRecordRaw[] = [
   {

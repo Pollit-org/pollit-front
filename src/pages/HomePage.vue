@@ -6,8 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import Router from "src/router";
-import { useConnectedUserStore } from "src/stores/connected-user-store";
+import Router from 'src/router';
+import { useConnectedUserStore } from 'src/stores/connected-user-store';
 
 const connectedUserStore = useConnectedUserStore();
 

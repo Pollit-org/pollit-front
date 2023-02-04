@@ -73,7 +73,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
-import { useConnectedUserStore } from "src/stores/connected-user-store";
+import { useConnectedUserStore } from 'src/stores/connected-user-store';
 import Router from 'src/router';
 import PollitToolbarTitle from './components/PollitToolbarTitle.vue';
 
