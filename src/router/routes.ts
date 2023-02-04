@@ -24,6 +24,14 @@ const routes: RouteRecordRaw[] = [
         name: 'Home',
         component: () => import('pages/HomePage.vue'),
       },
+      {
+        path: 'account-settings',
+        name: 'AccountSettings',
+        component: () => import('pages/AccountSettingsPage.vue'),
+        meta: {
+          userRequirements: [userSignedIn]
+        }
+      },
     ],
   },
   {
