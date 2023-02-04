@@ -72,7 +72,6 @@ export const useConnectedUserStore = defineStore<string, ConnectedUserState, Con
             await axiosPollit.post('auth/signup', { email, userName, password });
             const {accessToken, refreshToken} = (await axiosPollit.post('auth/signin', { emailOrUserName: email, password })).data;
             this.user = buildUser(accessToken, refreshToken);
-            debugger
 
             if (this.user.claims.HasTemporaryUserName == 'True')
                 this.router.push({ name: 'SetPermanentUserName' })
