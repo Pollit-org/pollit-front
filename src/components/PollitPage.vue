@@ -1,8 +1,8 @@
 <template>
   <q-page class="flex justify-center">
     <div
-      :class="verticalCenter ? 'self-center' : ''"
-      :style="'width: 80%; max-width:' + maxWidth"
+      :class="props.verticalCenter ? 'self-center' : ''"
+      :style="'width: 80%; max-width:' + props.maxWidth"
     >
       <slot></slot>
     </div>

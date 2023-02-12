@@ -1,6 +1,9 @@
 import axios, { AxiosError, type AxiosRequestConfig } from 'axios';
 import router from 'src/router';
 import { useConnectedUserStore } from 'stores/connected-user-store';
+import { Notify } from 'quasar'
+import { i18n } from 'src/boot/i18n';
+import { ApiError } from 'src/api/api-errors';
 
 const axiosPollit = axios.create({
   baseURL: 'https://dev.api.pollit.me',
@@ -20,9 +23,18 @@ const authorizationHeaderInterceptor = async (request: AxiosRequestConfig) => {
 };
 
 const unauthorizedResponseInterceptor = (error: AxiosError) => {
-    if (error.response?.status === 401) {
+  Notify.create({
+    message: i18n.global.t(error.response?.data.detail as ApiError ?? 'POLLIT:UNKOWN_ERROR'),
+      color: 'negative',
+      icon: 'report_problem',
+      position: 'top',
+      iconSize: '64px'
+    })
+
+    if (error.response?.status === 401 && router.currentRoute.value.name !== 'Signin') {
         localStorage.removeItem('accessToken');
         router.go(0);
+        return;
     }
 
     return Promise.reject(error);

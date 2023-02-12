@@ -1,4 +1,3 @@
-import { Store } from 'pinia';
 import { ConnectedUserStore } from 'src/stores/connected-user-store';
 import { RouteRecordRaw } from 'vue-router';
 
