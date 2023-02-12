@@ -1,4 +1,3 @@
-import { Store } from 'pinia';
 import { ConnectedUserStore } from 'src/stores/connected-user-store';
 import { RouteRecordRaw } from 'vue-router';
 
@@ -23,6 +22,14 @@ const routes: RouteRecordRaw[] = [
         path: '',
         name: 'Home',
         component: () => import('pages/HomePage.vue'),
+      },
+      {
+        path: 'account-settings',
+        name: 'AccountSettings',
+        component: () => import('pages/AccountSettingsPage.vue'),
+        meta: {
+          userRequirements: [userSignedIn]
+        }
       },
     ],
   },

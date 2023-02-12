@@ -11,6 +11,16 @@ h1 {
     line-height: 1.5;
 }
 
+h2 {
+  display: block;
+  font-size: 1.5em;
+  margin-block-start: 0.67em;
+  margin-block-end: 0.67em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  line-height: 1.3;
+}
+
 body.body--dark {
     background: #1c1c1c
   }
@@ -20,4 +30,9 @@ body.body--dark {
   }
   .bg-banner {
     background: $banner;
+  }
+
+  .no-link-style {
+    text-decoration: none; 
+    color: inherit !important;
   }

@@ -1,10 +1,22 @@
 <template>
   <q-page class="flex justify-center">
-      <div style="width: 80%; max-width: 650px;">
-          <slot></slot>
-      </div>
-    </q-page>
+    <div
+      :class="props.verticalCenter ? 'self-center' : ''"
+      :style="'width: 80%; max-width:' + props.maxWidth"
+    >
+      <slot></slot>
+    </div>
+  </q-page>
 </template>
 
 <script setup lang="ts">
+export interface Props {
+  verticalCenter: boolean;
+  maxWidth: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  verticalCenter: false,
+  maxWidth: '650px',
+});
 </script>

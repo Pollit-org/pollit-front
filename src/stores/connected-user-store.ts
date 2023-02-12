@@ -27,6 +27,7 @@ interface User {
 interface UserClaims {
     UserId: string,
     UserName: string,
+    Email: string,
     IsEmailVerified: string,
     HasTemporaryUserName: string,
 }

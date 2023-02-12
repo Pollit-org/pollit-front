@@ -1,29 +1,25 @@
 <script setup lang="ts">
-import GoogleSignin from 'components/authent/GoogleSignin.vue'
-import CredentialsSigninForm from 'components/authent/CredentialsSigninForm.vue'
+import GoogleSignin from 'components/authent/GoogleSignin.vue';
+import CredentialsSigninForm from 'components/authent/CredentialsSigninForm.vue';
+import PollitPage from 'components/PollitPage.vue';
 import Router from 'src/router';
 
-const goToSignup = () => Router.push({ name: 'Signup'});
+const goToSignup = () => Router.push({ name: 'Signup' });
 </script>
 
 <template>
-  <q-page class="flex justify-center text-center q-mx-none q-px-none">
-    <div class="self-center" style="width: 80%; max-width: 344px;">
-        <h1 class="q-mb-lg q-mt-none q-pt-none">Sign in</h1>
-        <google-signin @on-signin-success="onSigninSuccess"/>
-        <q-separator class="q-my-lg"></q-separator>
-        <credentials-signin-form class="q-mx-md" @on-signin-success="onSigninSuccess"/>
-        <q-separator class="q-my-lg"></q-separator>
-        <div><small>You don't have an account yet ?</small><br></div>
-        <q-btn
-            class="q-mt-sm"
-            rounded
-            outline
-            color="info"
-            @click="goToSignup"
-        >
-            <small>Sign up</small>
-        </q-btn>
-    </div>
-  </q-page>
+  <pollit-page vertical-center class="text-center" max-width="344px">
+    <h1 class="q-mb-lg q-mt-none q-pt-none">Sign in</h1>
+    <google-signin @on-signin-success="onSigninSuccess" />
+    <q-separator class="q-my-lg"></q-separator>
+    <credentials-signin-form
+      class="q-mx-md"
+      @on-signin-success="onSigninSuccess"
+    />
+    <q-separator class="q-my-lg"></q-separator>
+    <div><small>You don't have an account yet ?</small><br /></div>
+    <q-btn class="q-mt-sm" rounded outline color="info" @click="goToSignup">
+      <small>Sign up</small>
+    </q-btn>
+  </pollit-page>
 </template>

@@ -17,7 +17,7 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item clickable to="/account-settings" class="no-link-style">
               <q-item-section avatar>
                   <q-icon name="settings"/>
                 </q-item-section>

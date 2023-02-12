@@ -13,5 +13,8 @@
       "args": ["-ExecutionPolicy", "Bypass"]
     }
   },
-  "terminal.integrated.defaultProfile.windows": "PowerShell"
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "[vue]": {
+    "editor.defaultFormatter": "octref.vetur"
+  }
 }
