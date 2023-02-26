@@ -1,11 +1,11 @@
 <template>
   <pollit-page>
-    <poll-list></poll-list>
+    <poll-feed></poll-feed>
   </pollit-page>
 </template>
 
 <script setup lang="ts">
-import PollList from 'src/components/feed/PollList.vue';
+import PollFeed from 'src/components/PollFeed.vue';
 import Router from 'src/router';
 import { useConnectedUserStore } from 'src/stores/connected-user-store';
 import PollitPage from 'src/components/PollitPage.vue';
