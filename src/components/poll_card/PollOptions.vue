@@ -1,12 +1,13 @@
 <script setup lang="ts">
-export interface Props {
-  options: { text: string; votes: number }[];
-}
 
-const props = defineProps<Props>();
+import { Post } from 'src/models/interfaces';
+import { inject } from 'vue';
+import { postInjectionKey } from './injection_keys';
+
+const post = inject(postInjectionKey) as Post
 
 const showResults = (index: number) => {
-  console.log(`Option selected: ${props.options[index].text}`);
+  console.log(`Option selected: ${post.votingOptions[index].name}`);
 };
 </script>
 
@@ -16,12 +17,12 @@ const showResults = (index: number) => {
       <q-list bordered separator dense>
         <q-item
           clickable
-          v-for="(option, index) in props.options"
+          v-for="(option, index) in post.votingOptions"
           :key="index"
           @click="showResults(index)"
         >
           <q-item-section>
-            <q-item-label>{{ option.text }}</q-item-label>
+            <q-item-label>{{ option.name }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>

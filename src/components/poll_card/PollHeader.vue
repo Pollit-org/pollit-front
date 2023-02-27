@@ -1,11 +1,9 @@
 <script setup lang="ts">
-export interface Props {
-  username: string;
-  timeSincePost: string;
-  tags: { text: string; link: string }[];
-}
+import { Post } from 'src/models/interfaces';
+import { inject } from 'vue';
+import { postInjectionKey } from './injection_keys';
 
-const props = defineProps<Props>();
+const post = inject(postInjectionKey) as Post
 </script>
 
 <template>
@@ -13,9 +11,9 @@ const props = defineProps<Props>();
     <div class="row items-center">
       <div>
         <div class="text-weight-medium">
-          {{ props.username }}
+          {{ post.user.username }}
         </div>
-        <span class="text-weight-light">{{ props.timeSincePost }}</span>
+        <span class="text-weight-light">{{ post.timeSincePost }}</span>
       </div>
       <q-space />
       <div class="row q-pa-md wrap desktop-only">
@@ -25,9 +23,9 @@ const props = defineProps<Props>();
           class="q-ma-xs text-weight-bold"
           size="xs"
           style="font-size: 0.7rem"
-          v-for="(tag, index) in props.tags"
+          v-for="(tag, index) in post.tags"
           :key="index"
-          :label="'#' + tag.text"
+          :label="'#' + tag.name"
           :to="tag.link"
         />
       </div>
