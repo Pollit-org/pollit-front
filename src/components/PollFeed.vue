@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { Post } from 'src/models/interfaces';
 import { ref } from 'vue';
 import PollCard from './poll_card/PollCard.vue';
+import Router from 'src/router';
 
 const feed = ref({
   posts: [
@@ -127,6 +129,16 @@ const feed = ref({
 
 const postsCopy = feed.value.posts.slice(0);
 
+const viewPost = (post: Post) => {
+  Router.push({
+    name: 'Post',
+    params: {
+      title: post.title.toLowerCase().replace(/ /g, '-')
+    }
+  });
+}
+
+
 const onLoadRef = (index, done) => {
   setTimeout(() => {
     feed.value.posts.push(...postsCopy);
@@ -136,9 +148,9 @@ const onLoadRef = (index, done) => {
 </script>
 
 <template>
-  <div class="q-pa-md">
+  <div>
     <q-infinite-scroll @load="onLoadRef" :offset="250">
-      <poll-card v-for="(post, index) in feed.posts" :key="index" :post="post" />
+      <poll-card v-for="(post, index) in feed.posts" :key="index" :post="post" class="cursor-pointer"  @click="viewPost(post)"/>
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
           <q-spinner-dots color="primary" size="40px" />

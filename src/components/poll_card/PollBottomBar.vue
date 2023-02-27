@@ -33,6 +33,6 @@ const totalComments = sumComments(post.comments);
         >{{ totalComments }} Comments</span
       >
     </q-btn>
-    <q-btn round flat class="poll-share" icon="share" size="sm" />
+    <q-btn round flat class="poll-share" icon="share" size="sm"/>
   </q-card-actions>
 </template>

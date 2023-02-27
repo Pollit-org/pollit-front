@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr fff">
-    <q-header bordered class="bg-primary text-white">
+    <q-header bordered class="bg-banner text-white">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="desktop-hide" />
         <pollit-toolbar-title />

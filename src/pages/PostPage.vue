@@ -1,15 +1,16 @@
-import { ConnectedUserStore } from 'src/stores/connected-user-store';
-import { RouteRecordRaw } from 'vue-router';
+<script setup lang="ts">
 
-export type UserRequirement = (store: ConnectedUserStore) => boolean;
+import PollFull from 'src/components/poll_full_view/PollFull.vue';
+import PollitPage from 'src/components/PollitPage.vue';
+import { Post } from 'src/models/interfaces';
 
-declare module 'vue-router' {
-  interface RouteMeta {
-    userRequirements?: UserRequirement[];
-  }
-}
+// interface Props {
+//     post : Post
+// }
 
-const post_data = {
+// const props = defineProps<Props>()
+
+const post : Post = {
   user: {
     username: 'didou',
     profileLink: '/u/didou',
@@ -126,75 +127,12 @@ const post_data = {
       ],
     },
   ],
-};
+}
 
-const getPostById = (title: string) => post_data;
+</script>
 
-const userSignedIn: UserRequirement = (store) => store.user != null;
-const userNotSignedIn: UserRequirement = (store) => store.user == null;
-const userHasTemporaryUserName: UserRequirement = (store) =>
-  store.user?.claims.HasTemporaryUserName == 'True';
-
-const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      {
-        path: '',
-        name: 'Home',
-        component: () => import('pages/HomePage.vue'),
-      },
-      {
-        path: 'post/:title',
-        name: 'Post',
-        component: () => import('pages/PostPage.vue'),
-        // props: route => ({ post: getPostById(route.params.title as string) })
-      },
-      {
-        path: 'account-settings',
-        name: 'AccountSettings',
-        component: () => import('pages/AccountSettingsPage.vue'),
-        meta: {
-          userRequirements: [userSignedIn],
-        },
-      },
-    ],
-  },
-  {
-    path: '/',
-    component: () => import('src/layouts/OnboardingLayout.vue'),
-    children: [
-      {
-        path: 'signin',
-        name: 'Signin',
-        component: () => import('pages/SigninPage.vue'),
-        meta: {
-          userRequirements: [userNotSignedIn],
-        },
-      },
-      {
-        path: 'signup',
-        name: 'Signup',
-        component: () => import('pages/SignupPage.vue'),
-        meta: {
-          userRequirements: [userNotSignedIn],
-        },
-      },
-      {
-        path: 'setUserName',
-        name: 'SetPermanentUserName',
-        component: () => import('pages/SetPermanentUserNamePage.vue'),
-        meta: {
-          userRequirements: [userSignedIn, userHasTemporaryUserName],
-        },
-      },
-    ],
-  },
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
-  },
-];
-
-export default routes;
+<template>
+    <pollit-page>
+      <poll-full :post="post"></poll-full>
+    </pollit-page>
+</template>

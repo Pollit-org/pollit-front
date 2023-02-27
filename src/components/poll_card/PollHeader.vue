@@ -7,7 +7,7 @@ const post = inject(postInjectionKey) as Post
 </script>
 
 <template>
-  <q-card-section class="q-pt-none q-pb-none">
+  <q-card-section>
     <div class="row items-center">
       <div>
         <div class="text-weight-medium">

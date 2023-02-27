@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { Post } from 'src/models/interfaces';
 import RecursiveComment from './RecursiveComment.vue';
 
 interface Props {
-  comments : 
+  post: Post;
 }
+const props = defineProps<Props>();
 </script>
 <template>
   <q-card>
     <q-card-section>
-      <recursive-comment v-for="(comment, index) in comments" :key="index" :username="comment.username" :date="comment.date" :comment="comment.comme
-      " :child-comments="comment.childComments" />
+      <recursive-comment
+        v-for="(comment, index) in props.post.comments"
+        :key="index"
+        :comment="comment"
+        :op-user="post.user"
+      />
     </q-card-section>
   </q-card>
 </template>

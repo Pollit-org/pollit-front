@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import { User, Comment } from 'src/models/interfaces';
 import { computed } from 'vue';
 
 interface Props {
-  username: string;
-  date: string;
-  comment: string;
-  childComments: Props[];
+  comment: Comment;
+  opUser: User;
 }
 const props = defineProps<Props>();
 const spacing = 0;
@@ -15,32 +14,39 @@ const comment_syle = computed(() => {
   };
 });
 </script>
+
 <template>
   <q-expansion-item
     dense
     dense-toggle
-    expand-separator
     default-opened
     icon="perm_identity"
-    :label="props.username"
-    :caption="props.date"
+    :label="props.comment.user.username"
+    :caption="props.comment.timeSincePost"
     :style="comment_syle"
+    class="q-pb-sm"
   >
-    <q-card>
-      <q-card-section>
-        {{ props.comment }}
-      </q-card-section>
-      <q-card-section :v-if="props.childComments.length > 0">
+    <q-card class="comment-tree-marker">
+      <q-card-section class="q-pa-none q-pl-md q-pr-md q-pt-sm">
+        {{ props.comment.commentText }}
+      </q-card-section >
+      <q-card-section v-if="props.comment.replies.length > 0" class="q-pa-none q-pl-md q-pr-md q-pt-sm">
         <recursive-comment
           :spacing="spacing + 10"
-          v-for="(childComment, index) in props.childComments"
+          v-for="(childComment, index) in props.comment.replies"
           :key="index"
-          :username="childComment.username"
-          :date="childComment.date"
-          :comment="childComment.comment"
-          :child-comments="childComment.childComments"
+          :comment="childComment"
+          :op-user="props.opUser"
         />
       </q-card-section>
     </q-card>
   </q-expansion-item>
 </template>
+
+<style>
+
+.comment-tree-marker {
+  border-left: 0.15rem solid rgb(220, 220, 220);
+}
+
+</style>
