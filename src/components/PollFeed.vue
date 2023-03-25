@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import PollCard from './poll_card/PollCard.vue';
+import PollForm from './PollForm.vue';
 import Router from 'src/router';
 import { usePollStore } from 'src/stores/poll-store';
 import { Poll } from 'src/api/models/poll';
@@ -52,6 +53,7 @@ const onLoadRef = (index: number, done: (stop?: boolean) => void) => {
 <template>
   <div>
     <q-infinite-scroll ref="infiniteScroll" @load="onLoadRef" :offset="250">
+      <poll-form class="q-pt-sm"></poll-form>
       <poll-card
         v-for="poll in pollStore.$state.polls"
         :key="poll.pollId"
