@@ -1,11 +1,12 @@
 <template>
-    <q-toolbar-title shrink @click="showHome" class="cursor-pointer">
-        Pollit
-    </q-toolbar-title>
+  <router-link :to="{name:'Home'}" class="header-title" >Pollit</router-link>
 </template>
+<style>
 
-<script setup lang="ts">
-import Router from 'src/router';
+.header-title {
+    color: white;
+    font-size: large;
+    text-decoration: none;
+}
 
-const showHome = () => Router.push({ name: 'Home' })
-</script>
+</style>
