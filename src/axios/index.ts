@@ -6,8 +6,8 @@ import { i18n } from 'src/boot/i18n';
 import { ApiError } from 'src/api/api-errors';
 
 const axiosPollit = axios.create({
-  // baseURL: 'https://dev.api.pollit.me',
-  baseURL: 'https://localhost:7019',
+  baseURL: 'https://dev.api.pollit.me',
+  //baseURL: 'https://localhost:7019',
 });
 
 const authorizationHeaderInterceptor = async (request: AxiosRequestConfig) => {
