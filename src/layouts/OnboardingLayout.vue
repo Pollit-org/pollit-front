@@ -1,9 +1,13 @@
-<template>
-  <q-layout view="hHh lpr lfr">
+<script setup>
+import PollitToolbarTitle from './components/PollitToolbarTitle.vue';
 
-    <q-header reveal bordered class="bg-banner text-white">
+</script>
+
+<template>
+  <q-layout view="hHh Lpr fff">
+    <q-header bordered class="bg-banner text-white">
       <q-toolbar>
-        <pollit-toolbar-title/>
+        <pollit-toolbar-title />
       </q-toolbar>
     </q-header>
 
@@ -13,8 +17,3 @@
 
   </q-layout>
 </template>
-
-<script setup>
-import PollitToolbarTitle from './components/PollitToolbarTitle.vue';
-
-</script>

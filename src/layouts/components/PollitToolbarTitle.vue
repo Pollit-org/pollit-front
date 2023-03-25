@@ -1,9 +1,12 @@
 <template>
-    <q-btn to="/" flat no-caps no-wrap stretch size="lg">
-        Pollit
-    </q-btn>
-  </template>
-  
-  <script setup>
+  <router-link :to="{name:'Home'}" class="header-title" >Pollit</router-link>
+</template>
+<style>
 
-  </script>
+.header-title {
+    color: white;
+    font-size: large;
+    text-decoration: none;
+}
+
+</style>
