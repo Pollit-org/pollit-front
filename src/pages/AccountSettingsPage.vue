@@ -1,10 +1,16 @@
 <script setup lang="ts">
+import { number } from '@intlify/core-base';
 import PollitPage from 'components/PollitPage.vue';
 import { useConnectedUserStore } from 'src/stores/connected-user-store';
 import { ref } from 'vue';
 
 const connectedUserStore = useConnectedUserStore();
 const genderOptions = ref(['Female', 'Male', 'Other', 'Prefer not to say']);
+
+const onBirthdateChanged = (birthdate: string) => {
+  const [year, month, day] = birthdate.split('-').map((x) => parseInt(x));
+  connectedUserStore.setBirthdate(year, month, day);
+};
 </script>
 
 <template>
@@ -27,16 +33,17 @@ const genderOptions = ref(['Female', 'Male', 'Other', 'Prefer not to say']);
       </q-input>
     </q-form>
     <q-form class="flex align-center justify-between">
-      <div class="self-end">Age</div>
+      <div class="self-end">Birthdate</div>
       <q-input
-        model-value="16"
-        style="max-width: 55%; width: 500px"
-        item-aligned
-        dense
+        model-value="1997-09-27"
+        formatModel="string"
+        format="YYYY-MM-DD"
         class="self-end q-px-none q-py-none"
+        dense
+        type="date"
         input-class="q-py-none self-end"
-        input-style="line-height: inherit;"
-        type="number"
+        input-style="line-height: inherit; "
+        @change="onBirthdateChanged"
       />
     </q-form>
     <q-form class="flex align-center justify-between">

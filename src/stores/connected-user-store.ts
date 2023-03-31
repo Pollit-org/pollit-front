@@ -8,6 +8,8 @@ interface ConnectedUserActions {
     signupWithCredentials: (email: string, userName: string, password: string) => Promise<void> | void
     signinWithGoogle: (code: string) => Promise<void> | void,
     setPermanentUserName: (userName: string) => Promise<void> | void,
+    setGender: (gender: string) => Promise<void> | void,
+    setBirthdate: (year: number, month: number, day: number) => Promise<void> | void,
     signout: () => Promise<void> | void
 }
 
@@ -100,6 +102,16 @@ export const useConnectedUserStore = defineStore<string, ConnectedUserState, Con
                 await axiosPollit.patch(`users/${this.user?.claims.UserId}/userName`, {userName});
                 this.user!.claims.HasTemporaryUserName == 'False'; // todo: signin again with refresh token instead of this dirty trixx
                 this.router.push({ name: 'Home' })
+            });
+        },
+        async setGender(gender: string) {      
+            return usingLoaderAsync(async () => {
+                await axiosPollit.patch(`users/${this.user?.claims.UserId}/gender`, {gender});
+            });
+        },
+        async setBirthdate(year: number, month: number, day: number) {      
+            return usingLoaderAsync(async () => {
+                await axiosPollit.patch(`users/${this.user?.claims.UserId}/birthdate`, {year, month, day});
             });
         },
         signout() {
