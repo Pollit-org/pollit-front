@@ -1,5 +1,5 @@
 <template>
-  <q-form @submit="submitForm">
+  <q-form @submit="submitForm" ref="pollForm" @click="showOptions = true">
     <q-card bordered>
       <q-input
         dense
@@ -9,7 +9,7 @@
         lazy-rules="ondemand"
         :rules="[(val) => /\S/.test(val) || 'Question is required']"
       />
-      <q-card-section class="q-pb-xs">
+      <q-card-section class="q-pb-xs" v-if="showOptions">
         <q-list bordered dense>
           <q-item v-for="(option, index) in options" :key="index" dense>
             <q-item-section dense>
@@ -64,6 +64,8 @@ import { ref } from 'vue';
 const default_option_text = "I don't know";
 const question = ref('');
 const options = ref(['', '', default_option_text]);
+const showOptions = ref(false);
+const pollForm = ref(null);
 
 const addOption = () => {
   options.value.splice(options.value.length - 1, 0, ''); // add a blank option before the "I don't know" option
@@ -82,4 +84,11 @@ const submitForm = () => {
   // Handle form submission here
   console.log('Form submitted!');
 };
+
+document.addEventListener('click', (event) => {
+  if (event.target.closest('.q-form') === null) {
+    showOptions.value = false;
+    pollForm.value.reset();
+  }
+});
 </script>
