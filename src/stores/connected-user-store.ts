@@ -3,14 +3,17 @@ import { defineStore, Store, type _GettersTree } from 'pinia';
 import jwtDecode from 'jwt-decode';
 import { usingLoader, usingLoaderAsync } from 'src/misc/usingLoader';
 
+type PromiseOrNot<T> = Promise<T> | T;
+
 interface ConnectedUserActions {
-    signinWithCredentials: (emailOrUserName: string, password: string) => Promise<void> | void
-    signupWithCredentials: (email: string, userName: string, password: string) => Promise<void> | void
-    signinWithGoogle: (code: string) => Promise<void> | void,
-    setPermanentUserName: (userName: string) => Promise<void> | void,
-    setGender: (gender: string) => Promise<void> | void,
-    setBirthdate: (year: number, month: number, day: number) => Promise<void> | void,
-    signout: () => Promise<void> | void
+    signinWithCredentials: (emailOrUserName: string, password: string) => PromiseOrNot<void>
+    signupWithCredentials: (email: string, userName: string, password: string) => PromiseOrNot<void>
+    signinWithGoogle: (code: string) => PromiseOrNot<void>
+    setPermanentUserName: (userName: string) => PromiseOrNot<void>
+    setGender: (gender: string) => PromiseOrNot<void>
+    setBirthdate: (year: number, month: number, day: number) => PromiseOrNot<void>
+    fetchPrivateProfile: () => PromiseOrNot<void>
+    signout: () => PromiseOrNot<void>
 }
 
 interface ConnectedUserState {
@@ -24,7 +27,17 @@ interface ConnectedUserGetters extends _GettersTree<ConnectedUserState> {
 interface User {
     claims: UserClaims,
     accessToken: string,
-    refreshToken: string
+    refreshToken: string,
+    privateProfile?: PrivateProfile
+}
+
+interface PrivateProfile {
+     userId: string,
+     email: string,
+     userName: string,
+     birthdate: string,
+     gender: string,
+     avatarUrl: string
 }
 
 interface UserClaims {
@@ -100,18 +113,26 @@ export const useConnectedUserStore = defineStore<string, ConnectedUserState, Con
         async setPermanentUserName(userName: string) {      
             return usingLoaderAsync(async () => {
                 await axiosPollit.patch(`users/${this.user?.claims.UserId}/userName`, {userName});
-                this.user!.claims.HasTemporaryUserName == 'False'; // todo: signin again with refresh token instead of this dirty trixx
+                this.user!.claims.HasTemporaryUserName = 'False'; // todo: signin again with refresh token instead of this dirty trixx
                 this.router.push({ name: 'Home' })
             });
         },
         async setGender(gender: string) {      
-            return usingLoaderAsync(async () => {
+            return usingLoaderAsync(async () =>{
                 await axiosPollit.patch(`users/${this.user?.claims.UserId}/gender`, {gender});
+                await this.fetchPrivateProfile();
             });
         },
         async setBirthdate(year: number, month: number, day: number) {      
+            return usingLoaderAsync(async () => { 
+                await axiosPollit.patch(`users/${this.user?.claims.UserId}/birthdate`, {year, month, day})
+                await this.fetchPrivateProfile();
+            });
+        },
+        async fetchPrivateProfile() {
             return usingLoaderAsync(async () => {
-                await axiosPollit.patch(`users/${this.user?.claims.UserId}/birthdate`, {year, month, day});
+                const { data: privateProfileResponse } = await axiosPollit.get<PrivateProfile>(`users/${this.user?.claims.UserId}/profile/private`);
+                this.user!.privateProfile = privateProfileResponse;
             });
         },
         signout() {
@@ -126,5 +147,4 @@ export const useConnectedUserStore = defineStore<string, ConnectedUserState, Con
             return this.user!.claims.UserName;
         }
     },
-
 })

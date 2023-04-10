@@ -5,11 +5,23 @@ import { useConnectedUserStore } from 'src/stores/connected-user-store';
 import { ref } from 'vue';
 
 const connectedUserStore = useConnectedUserStore();
-const genderOptions = ref(['Female', 'Male', 'Other', 'Prefer not to say']);
+
+connectedUserStore.fetchPrivateProfile();
+
+const genderOptions = ref([
+  { label: 'Female', value: 'Female' },
+  { label: 'Male', value: 'Male' },
+  { label: 'Other', value: 'Other' },
+  { label: 'Prefer not to say', value: 'PreferNotToSay' },
+]);
 
 const onBirthdateChanged = (birthdate: string) => {
   const [year, month, day] = birthdate.split('-').map((x) => parseInt(x));
   connectedUserStore.setBirthdate(year, month, day);
+};
+
+const onGenderChanged = (gender: { value: string }) => {
+  connectedUserStore.setGender(gender.value);
 };
 </script>
 
@@ -32,10 +44,11 @@ const onBirthdateChanged = (birthdate: string) => {
       >
       </q-input>
     </q-form>
+    {{ connectedUserStore.user?.privateProfile?.birthdate }}
     <q-form class="flex align-center justify-between">
       <div class="self-end">Birthdate</div>
       <q-input
-        model-value="1997-09-27"
+        :model-value="connectedUserStore.user?.privateProfile?.birthdate"
         formatModel="string"
         format="YYYY-MM-DD"
         class="self-end q-px-none q-py-none"
@@ -50,12 +63,13 @@ const onBirthdateChanged = (birthdate: string) => {
       <div class="self-end">Gender</div>
       <q-select
         style="max-width: 55%; width: 500px"
-        model-value="Male"
+        :model-value="connectedUserStore.user?.privateProfile?.gender"
         :options="genderOptions"
         dense
         class="self-end q-px-none q-py-none"
         input-class="q-py-none self-end"
         input-style="line-height: inherit; display: none;"
+        @update:model-value="onGenderChanged"
       />
     </q-form>
     <q-form class="flex align-center justify-center">
