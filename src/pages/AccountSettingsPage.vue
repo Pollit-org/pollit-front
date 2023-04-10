@@ -44,7 +44,6 @@ const onGenderChanged = (gender: { value: string }) => {
       >
       </q-input>
     </q-form>
-    {{ connectedUserStore.user?.privateProfile?.birthdate }}
     <q-form class="flex align-center justify-between">
       <div class="self-end">Birthdate</div>
       <q-input
@@ -90,7 +89,7 @@ const onGenderChanged = (gender: { value: string }) => {
         input-style="line-height: inherit;"
       />
     </q-form>
-    <q-form class="flex align-center justify-between">
+    <!-- <q-form class="flex align-center justify-between">
       <div class="self-end">Avatar</div>
       <q-input
         model-value="toto"
@@ -102,7 +101,7 @@ const onGenderChanged = (gender: { value: string }) => {
         input-style="line-height: inherit;"
       >
       </q-input>
-    </q-form>
+    </q-form> -->
     <h2 class="q-mt-xl q-mb-xs text-negative">Danger zone</h2>
     <q-separator color="negative"></q-separator>
     <q-form class="flex align-center justify-center">
