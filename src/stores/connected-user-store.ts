@@ -8,7 +8,8 @@ type PromiseOrNot<T> = Promise<T> | T;
 interface ConnectedUserActions {
     signinWithCredentials: (emailOrUserName: string, password: string) => PromiseOrNot<void>
     signupWithCredentials: (email: string, userName: string, password: string) => PromiseOrNot<void>
-    signinWithGoogle: (code: string) => PromiseOrNot<void>
+    signinWithGoogleAuthCode: (code: string) => PromiseOrNot<void>
+    signinWithGoogleAccessToken: (googleAccessToken: string) => PromiseOrNot<void>
     setPermanentUserName: (userName: string) => PromiseOrNot<void>
     setGender: (gender: string) => PromiseOrNot<void>
     setBirthdate: (year: number, month: number, day: number) => PromiseOrNot<void>
@@ -99,9 +100,20 @@ export const useConnectedUserStore = defineStore<string, ConnectedUserState, Con
                     this.router.push({ name: 'Home' })
             });
         },
-        signinWithGoogle(code: string) {
+        signinWithGoogleAuthCode(code: string) {
             return usingLoaderAsync(async () => {
-                const {accessToken, refreshToken} = (await axiosPollit.post('auth/signin/google', { code })).data;
+                const {accessToken, refreshToken} = (await axiosPollit.post('auth/signin/google/authCode', { code })).data;
+                this.user = buildUser(accessToken, refreshToken);
+                
+                if (this.user.claims.HasTemporaryUserName == 'True')
+                    this.router.push({ name: 'SetPermanentUserName' })
+                else
+                    this.router.push({ name: 'Home' })
+            });
+        },
+        signinWithGoogleAccessToken(googleAccessToken: string) {
+            return usingLoaderAsync(async () => {
+                const {accessToken, refreshToken} = (await axiosPollit.post('auth/signin/google/accessToken', { accessToken: googleAccessToken })).data;
                 this.user = buildUser(accessToken, refreshToken);
                 
                 if (this.user.claims.HasTemporaryUserName == 'True')

@@ -1,41 +1,61 @@
 <script setup lang="ts">
-import {ImplicitFlowErrorResponse, ImplicitFlowSuccessResponse, useCodeClient} from 'vue3-google-signin';
+import {
+  type CredentialResponse,
+  useOneTap,
+  AuthCodeFlowSuccessResponse,
+  AuthCodeFlowErrorResponse,
+  useTokenClient,
+  useCodeClient,
+  ImplicitFlowErrorResponse,
+  ImplicitFlowSuccessResponse,
+} from 'vue3-google-signin';
 import { useConnectedUserStore } from 'stores/connected-user-store';
 
 const connectedUserStore = useConnectedUserStore();
 
-const emit = defineEmits(['onSigninSuccess'])
+const emit = defineEmits(['onSigninSuccess']);
 
-const handleOnSuccess = async (response: ImplicitFlowSuccessResponse) => {
-  await connectedUserStore.signinWithGoogle(response.code);
-  emit('onSigninSuccess')
+// todo maybe later ? one tap signin
+// useOneTap({
+//   onSuccess: (response: CredentialResponse) => {
+//     console.log('Success:', response);
+//   },
+//   onError: () => console.error('Error with One Tap Login'),
+//   autoSelect: false,
+//   // options
+// });
+
+const handleOnSuccess = async (response: AuthCodeFlowSuccessResponse) => {
+  await connectedUserStore.signinWithGoogleAccessToken(response.access_token);
+  console.log('Access Token: ', response.access_token);
 };
 
-const handleOnError = (errorResponse: ImplicitFlowErrorResponse) => {
+const handleOnError = (errorResponse: AuthCodeFlowErrorResponse) => {
   console.log('Error: ', errorResponse);
 };
 
-const { login } = useCodeClient({
+const { isReady, login } = useTokenClient({
   onSuccess: handleOnSuccess,
   onError: handleOnError,
-  scope: 'email https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.birthday.read',  
+  // other options
 });
 
 interface Props {
-  label?: string
+  label?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {label: 'Sign in with Google'})
-
-
+const props = withDefaults(defineProps<Props>(), {
+  label: 'Sign in with Google',
+});
 </script>
 
 <template>
-  <q-btn
-    rounded
-    outline
-    @click="() => login()">
-    <q-icon name="svguse:icons/google.svg#classic" size="18px" class="q-mr-xs"></q-icon>
+  <q-btn :disable="!isReady" rounded outline @click="() => login()">
+    <q-icon
+      name="svguse:icons/google.svg#classic"
+      size="18px"
+      class="q-mr-xs"
+    ></q-icon>
     {{ props.label }}
   </q-btn>
 </template>
