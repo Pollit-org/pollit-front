@@ -9,7 +9,8 @@ interface ConnectedUserActions {
     signinWithCredentials: (emailOrUserName: string, password: string) => PromiseOrNot<void>
     signupWithCredentials: (email: string, userName: string, password: string) => PromiseOrNot<void>
     signinWithGoogleAuthCode: (code: string) => PromiseOrNot<void>
-    signinWithGoogleAccessToken: (googleAccessToken: string) => PromiseOrNot<void>
+    signinWithGoogleAccessToken: (googleAccessToken: string) => PromiseOrNot<void>,
+    signinWithRefreshToken: () => PromiseOrNot<void>
     setPermanentUserName: (userName: string) => PromiseOrNot<void>
     setGender: (gender: string) => PromiseOrNot<void>
     setBirthdate: (year: number, month: number, day: number) => PromiseOrNot<void>
@@ -122,10 +123,21 @@ export const useConnectedUserStore = defineStore<string, ConnectedUserState, Con
                     this.router.push({ name: 'Home' })
             });
         },
+        signinWithRefreshToken() {
+            return usingLoaderAsync(async () => {
+                const {accessToken, refreshToken} = (await axiosPollit.post('auth/signin/refreshToken', { expiredAccessToken: this.user?.accessToken, refreshToken: this.user?.refreshToken })).data;
+                this.user = buildUser(accessToken, refreshToken);
+                
+                if (this.user.claims.HasTemporaryUserName == 'True')
+                    this.router.push({ name: 'SetPermanentUserName' })
+                else
+                    this.router.push({ name: 'Home' })
+            });
+        },
         async setPermanentUserName(userName: string) {      
             return usingLoaderAsync(async () => {
                 await axiosPollit.patch(`users/${this.user?.claims.UserId}/userName`, {userName});
-                this.user!.claims.HasTemporaryUserName = 'False'; // todo: signin again with refresh token instead of this dirty trixx
+                await this.signinWithRefreshToken();
                 this.router.push({ name: 'Home' })
             });
         },
