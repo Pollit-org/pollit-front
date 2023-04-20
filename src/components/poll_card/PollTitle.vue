@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { Post } from 'src/models/interfaces';
 import { inject } from 'vue';
 import { postInjectionKey } from './injection_keys';
+import { Poll } from 'src/api/models/poll';
 
-const post = inject(postInjectionKey) as Post
-
+const poll = inject(postInjectionKey) as Poll;
 </script>
 
 <template>
-  <q-card-section class="text-h6 q-pt-none q-pb-none">{{ post.title }}</q-card-section>
+  <q-card-section class="text-h6 q-pt-none q-pb-none">{{
+    poll.title
+  }}</q-card-section>
 </template>

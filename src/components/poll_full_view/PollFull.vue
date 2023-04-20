@@ -9,6 +9,6 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-  <poll-card :post="props.post" class="q-mb-xs"/>
+  <poll-card :poll="props.post" class="q-mb-xs" />
   <comment-section :post="props.post" />
 </template>

@@ -2,8 +2,7 @@ import { axiosPollit } from 'src/axios';
 import { defineStore, Store, type _GettersTree } from 'pinia';
 import jwtDecode from 'jwt-decode';
 import { usingLoader, usingLoaderAsync } from 'src/misc/usingLoader';
-
-type PromiseOrNot<T> = Promise<T> | T;
+import { PromiseOrNot } from 'src/misc/promiseOrNot';
 
 interface ConnectedUserActions {
     signinWithCredentials: (emailOrUserName: string, password: string) => PromiseOrNot<void>
