@@ -146,9 +146,10 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/HomePage.vue'),
       },
       {
-        path: 'post/:title',
-        name: 'Post',
-        component: () => import('pages/PostPage.vue'),
+        path: 'polls/:pollId',
+        name: 'Poll',
+        component: () => import('pages/PollPage.vue'),
+        props: true
         // props: route => ({ post: getPostById(route.params.title as string) })
       },
       {

@@ -2,22 +2,22 @@ import { Store, _GettersTree, defineStore } from 'pinia'
 import { Poll } from 'src/api/models/poll'
 import { Comment } from 'src/api/models/comment'
 import { axiosPollit } from 'src/axios'
+import { usingLoaderAsync } from 'src/misc/usingLoader'
 
 interface PollStoreActions {
-    fetchMore: () => Promise<boolean>
+    fetchMore: () => Promise<boolean>,
+    setCurrentPollId: (id: string) => Promise<void>
 }
 
 interface PollStoreState {
     polls: Poll[] | null,
     currentPage: number | null
     hasNextPage: boolean,
-    currentPollId: string | null;
+    currentPoll: Poll | null;
+    currentPollComments: Comment[] | null;
 }
 
-interface PollStoreGetters extends _GettersTree<PollStoreState> {
-    currentPoll: () => Poll | null;
-    currentPollComments: () => Comment[] | null;
-}
+type PollStoreGetters = _GettersTree<PollStoreState>;
 
 export type PollStore = Store<string, PollStoreState, PollStoreGetters, PollStoreActions>;
 
@@ -27,7 +27,8 @@ export const usePollStore = defineStore<string, PollStoreState, PollStoreGetters
             polls: null,
             currentPage: null,
             hasNextPage: true,
-            currentPollId: null
+            currentPoll: null,
+            currentPollComments: null
         }
     },
     actions: {
@@ -40,7 +41,7 @@ export const usePollStore = defineStore<string, PollStoreState, PollStoreGetters
             else
                 this.currentPage += 1;
 
-            const {items, options, hasNextPage} = (await axiosPollit.get(`polls/feed?page=${this.currentPage}&pageSize=1`)).data;
+            const {items, options, hasNextPage} = (await axiosPollit.get(`polls/feed?page=${this.currentPage}&pageSize=1&orderBy=createdAt&order=descending`)).data;
             
             this.polls.push(...items);
             this.currentPage = options.pageNumber;
@@ -48,48 +49,24 @@ export const usePollStore = defineStore<string, PollStoreState, PollStoreGetters
 
             return hasNextPage;
         },
+        setCurrentPollId(id: string) {
+            return usingLoaderAsync(async () => {
+                const currentPollFilter = this.polls?.filter(p => p.pollId == id) ?? [];
+                if (currentPollFilter.length > 0)
+                    this.currentPoll = currentPollFilter[0];
+                
+                const {items: polls} = (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`)).data;
+                const {items: comments} = (await axiosPollit.get(`polls/${id}/comments`)).data;
+
+                if (polls.length == 0)
+                    throw new Error(); // todo: show 404 instead
+                
+                this.currentPoll = polls[0];
+                this.currentPollComments = comments;
+            });
+        }
     },
     getters: {
-        currentPoll() { 
-            return this.state.polls == null || this.state.currentPollId == null 
-            ? null 
-            : this.state.polls[this.state.currentPollId] 
-        },
-        currentPollComments() {
-            return [
-                {
-                    author: 'didou',
-                    createdAt: "2023-04-15T13:21:16.466386Z",
-                    upvotes: 18,
-                    downvotes: 8,
-                    body: 'Gigachads drink tea',
-                    replies: [
-                        {
-                            author: 'didou',
-                            createdAt: "2023-04-15T13:21:16.466386Z",
-                            upvotes: 18,
-                            downvotes: 8,
-                            body: 'Gigachads drink tea',
-                        }
-                    ],
-                },
-                {
-                    author: 'didou',
-                    createdAt: "2023-04-15T13:21:16.466386Z",
-                    upvotes: 18,
-                    downvotes: 8,
-                    body: 'Gigachads drink tea',
-                    replies: [
-                        {
-                            author: 'didou',
-                            createdAt: "2023-04-15T13:21:16.466386Z",
-                            upvotes: 18,
-                            downvotes: 8,
-                            body: 'Gigachads drink tea',
-                        }
-                    ],
-                }
-            ] as Comment[]
-        }
+        
     },
 })

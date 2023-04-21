@@ -1,8 +1,12 @@
 export interface Comment {
-  author: string;
-  createdAt: string;
-  upvotes: number;
-  downvotes: number;
-  body: string;
-  replies: Comment[];
+  id: string
+  parentCommentId: any
+  body: string
+  myVoteDirection: string
+  upVotesCount: number
+  downVotesCount: number
+  author: string
+  createdAt: string
+  depth: number
+  children: Comment[]
 }

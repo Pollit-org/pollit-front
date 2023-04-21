@@ -132,11 +132,11 @@ const feed = ref({
 
 const postsCopy = feed.value.posts.slice(0);
 
-const viewPost = (poll: Poll) => {
+const viewPoll = (poll: Poll) => {
   Router.push({
-    name: 'Post',
+    name: 'Poll',
     params: {
-      title: poll.title.toLowerCase().replace(/ /g, '-'),
+      pollId: poll.pollId,
     },
   });
 };
@@ -154,7 +154,7 @@ const onLoadRef = (index: number, done: (stop?: boolean) => void) => {
         :key="poll.pollId"
         :poll="poll"
         class="cursor-pointer"
-        @click="viewPost(poll)"
+        @click="viewPoll(poll)"
       />
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
