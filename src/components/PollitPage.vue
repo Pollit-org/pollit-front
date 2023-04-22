@@ -1,20 +1,19 @@
 <template>
-  <p-spinner-page
-    v-if="showSpinnerOnLoad && globalStore.isLoading"
-    :has-back-button="props.hasBackButton"
-  ></p-spinner-page>
-  <q-page v-else class="flex justify-center">
+  <q-btn
+    icon="arrow_back"
+    class="q-mt-md q-ml-xl"
+    v-if="hasBackButton"
+    @click="goBack"
+  />
+  <q-page class="flex justify-center">
     <div
-      :class="props.verticalCenter ? 'self-center' : ''"
+      :class="props.verticalCenter || showSpinner ? 'self-center' : ''"
       :style="'width: 80%; max-width:' + props.maxWidth"
     >
-      <q-btn
-        icon="arrow_back"
-        class="q-mt-md"
-        v-if="hasBackButton"
-        @click="goBack"
-      />
       <error-not-found v-if="is404"></error-not-found>
+      <div v-else-if="showSpinner" class="flex justify-center self-center">
+        <p-spinner class="self-center"></p-spinner>
+      </div>
       <slot v-else></slot>
     </div>
   </q-page>
@@ -23,8 +22,10 @@
 <script setup lang="ts">
 import { useGlobalStore } from 'src/stores/global-store';
 import PSpinnerPage from 'components/PSpinnerPage.vue';
+import PSpinner from 'components/PSpinner.vue';
 import ErrorNotFound from 'src/pages/ErrorNotFound.vue';
 import Router from 'src/router';
+import { computed } from 'vue';
 
 export interface Props {
   verticalCenter: boolean;
@@ -45,6 +46,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const globalStore = useGlobalStore();
+
+const showSpinner = computed(
+  () => props.showSpinnerOnLoad && globalStore.isLoading
+);
 
 const goBack = () => {
   if (window.history.length > 2) Router.go(-1);
