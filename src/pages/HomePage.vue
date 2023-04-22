@@ -1,5 +1,5 @@
 <template>
-  <pollit-page>
+  <pollit-page :has-back-button="false">
     <poll-feed></poll-feed>
   </pollit-page>
 </template>
