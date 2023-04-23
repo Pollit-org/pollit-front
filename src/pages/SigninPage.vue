@@ -14,7 +14,8 @@ const goToSignup = () => Router.push({ name: 'Signup' });
   <pollit-page
     show-spinner-on-load
     vertical-center
-    class="text-center"
+    :has-back-button="false"
+    text-center
     max-width="344px"
   >
     <h1 class="q-mb-lg q-mt-none q-pt-none">Sign in</h1>

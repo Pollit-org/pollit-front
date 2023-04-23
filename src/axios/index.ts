@@ -4,6 +4,7 @@ import { useConnectedUserStore } from 'stores/connected-user-store';
 import { Notify } from 'quasar';
 import { i18n } from 'src/boot/i18n';
 import { ApiError } from 'src/api/api-errors';
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
 
 const axiosPollit = axios.create({
   //baseURL: 'https://dev.api.pollit.me',
@@ -20,6 +21,13 @@ const authorizationHeaderInterceptor = async (request: AxiosRequestConfig) => {
   request.headers.Authorization = `Bearer ${accessToken}`;
   return request;
 };
+
+const refreshAuthLogic = async (_) =>
+  await useConnectedUserStore().signinWithRefreshToken();
+
+createAuthRefreshInterceptor(axiosPollit, refreshAuthLogic, {
+  pauseInstanceWhileRefreshing: true,
+});
 
 const unauthorizedResponseInterceptor = (error: AxiosError) => {
   Notify.create({

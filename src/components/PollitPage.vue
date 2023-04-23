@@ -7,7 +7,10 @@
   />
   <q-page class="flex justify-center">
     <div
-      :class="props.verticalCenter || showSpinner ? 'self-center' : ''"
+      :class="
+        (props.verticalCenter || showSpinner ? 'self-center ' : '') +
+        (props.textCenter ? 'text-center ' : '')
+      "
       :style="'width: 80%; max-width:' + props.maxWidth"
     >
       <error-not-found v-if="is404"></error-not-found>
@@ -34,6 +37,7 @@ export interface Props {
   is404: boolean;
   hasBackButton: boolean;
   backButtonFallbackRoute: string | undefined;
+  textCenter: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -43,6 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
   is404: false,
   hasBackButton: true,
   backButtonFallbackRoute: undefined,
+  textCenter: false,
 });
 
 const globalStore = useGlobalStore();

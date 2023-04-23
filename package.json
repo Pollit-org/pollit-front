@@ -16,6 +16,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
+    "axios-auth-refresh": "^3.3.6",
     "jwt-decode": "3.1.2",
     "moment": "^2.29.4",
     "pinia": "^2.0.29",
