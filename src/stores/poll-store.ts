@@ -65,17 +65,16 @@ export const usePollStore = defineStore<
     },
     setCurrentPollId(id: string) {
       return usingLoaderAsync(async () => {
-        const currentPollFilter =
-          this.polls?.filter((p) => p.pollId == id) ?? [];
-        if (currentPollFilter.length > 0)
-          this.currentPoll = currentPollFilter[0];
+        this.currentPollNotFound = false;
+        this.currentPollComments = [];
+
+        this.currentPoll =
+          this.polls?.filter((p) => p.pollId == id)?.[0] ??
+          (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`))
+            .data.items?.[0] ??
+          null;
 
         const getCommentsAsync = axiosPollit.get(`polls/${id}/comments`);
-
-        this.currentPollComments = [];
-        this.currentPoll =
-          (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`))
-            .data.items?.[0] ?? null;
 
         try {
           this.currentPollComments = (await getCommentsAsync).data.items;

@@ -33,7 +33,7 @@ export interface Props {
   showSpinnerOnLoad: boolean;
   is404: boolean;
   hasBackButton: boolean;
-  backButtonFallbackRoute: string;
+  backButtonFallbackRoute: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
   showSpinnerOnLoad: true,
   is404: false,
   hasBackButton: true,
-  backButtonFallbackRoute: 'Home',
+  backButtonFallbackRoute: undefined,
 });
 
 const globalStore = useGlobalStore();
@@ -52,7 +52,6 @@ const showSpinner = computed(
 );
 
 const goBack = () => {
-  if (window.history.length > 2) Router.go(-1);
-  else Router.push({ name: props.backButtonFallbackRoute });
+  globalStore.navaigateBackOrDefault(props.backButtonFallbackRoute);
 };
 </script>

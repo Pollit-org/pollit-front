@@ -13,8 +13,8 @@
         color="white"
         text-color="blue"
         unelevated
-        to="/"
-        label="Go Home"
+        @click="globalStore.navaigateBackOrDefault()"
+        label="Go back"
         no-caps
       />
     </div>
@@ -22,4 +22,7 @@
 </template>
 
 <script setup lang="ts">
+import { useGlobalStore } from 'src/stores/global-store';
+
+const globalStore = useGlobalStore();
 </script>
