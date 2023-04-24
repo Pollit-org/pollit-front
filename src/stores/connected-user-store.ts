@@ -176,7 +176,7 @@ export const useConnectedUserStore = defineStore<
           this.user = buildUser(accessToken, refreshToken);
         } catch (e) {
           this.user = null;
-          this.router.push({ name: 'Home' });
+          this.router.push({ name: 'Signin' });
           return;
         }
 
