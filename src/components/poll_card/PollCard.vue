@@ -3,15 +3,15 @@ import PollBottomBar from './PollBottomBar.vue';
 import PollOptions from './PollOptions.vue';
 import PollTitle from './PollTitle.vue';
 import PollHeader from './PollHeader.vue';
-import { Post } from 'src/models/interfaces';
 import { provide } from 'vue';
 import { postInjectionKey } from './injection_keys';
+import { Poll } from 'src/api/models/poll';
 
 interface Props {
-  post: Post
+  poll: Poll;
 }
 const props = defineProps<Props>();
-provide(postInjectionKey, props.post);
+provide(postInjectionKey, props.poll);
 </script>
 
 <template>
@@ -19,6 +19,6 @@ provide(postInjectionKey, props.post);
     <poll-header />
     <poll-title />
     <poll-options />
-    <poll-bottom-bar style="z-index: -1;" />
+    <poll-bottom-bar style="z-index: -1" />
   </q-card>
 </template>

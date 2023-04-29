@@ -1,67 +1,84 @@
 import { defineStore, Store, type _GettersTree } from 'pinia';
 import { IDisposable } from 'src/misc/Disposable';
+import Router from 'src/router';
 
 export interface ILoader extends IDisposable {
-    id: string
-    dispose: () => void | Promise<void>;
+  id: string;
+  dispose: () => void | Promise<void>;
 }
 
 interface GlobalStoreActions {
-    setApiError: (apiError: string) => Promise<void> | void
-    newLoader: () => ILoader
-    stopLoader: (loaderId: string) => Promise<void> | void
+  setApiError: (apiError: string) => Promise<void> | void;
+  newLoader: () => ILoader;
+  stopLoader: (loaderId: string) => Promise<void> | void;
+  navaigateBackOrDefault: (default_?: string) => void;
 }
 
 interface GlobalStoreState {
-    apiError: string | null,
-    activeLoaders: Set<string>
+  apiError: string | null;
+  activeLoaders: Set<string>;
 }
 
 interface GlobalStoreGetters extends _GettersTree<GlobalStoreState> {
-    isLoading: () => boolean
+  isLoading: () => boolean;
 }
 
 function generateRandomId(length: number) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
-      counter += 1;
-    }
-    return result;
+  let result = '';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+    counter += 1;
+  }
+  return result;
 }
 
-export type GlobalStore = Store<string, GlobalStoreState, GlobalStoreGetters, GlobalStoreActions>;
+export type GlobalStore = Store<
+  string,
+  GlobalStoreState,
+  GlobalStoreGetters,
+  GlobalStoreActions
+>;
 
-export const useGlobalStore = defineStore<string, GlobalStoreState, GlobalStoreGetters, GlobalStoreActions>('GlobalStore', {
-    state: () => {
-        return {
-            apiError: null,
-            activeLoaders: new Set<string>
-        }
+export const useGlobalStore = defineStore<
+  string,
+  GlobalStoreState,
+  GlobalStoreGetters,
+  GlobalStoreActions
+>('GlobalStore', {
+  state: () => {
+    return {
+      apiError: null,
+      activeLoaders: new Set<string>(),
+    };
+  },
+  persist: false,
+  actions: {
+    setApiError(apiError: string) {
+      this.apiError = apiError;
     },
-    persist: false,
-    actions: {
-        setApiError(apiError: string) {
-            this.apiError = apiError;
-        },
-        newLoader() {
-            const loaderId = generateRandomId(16);
-            const loader : ILoader = {
-                id: loaderId,
-                dispose: () => this.stopLoader(loaderId)
-            }
-            this.activeLoaders.add(loader.id);
-            return loader;
-        },
-        stopLoader(loaderId: string) {
-            this.activeLoaders.delete(loaderId);
-        }
+    newLoader() {
+      const loaderId = generateRandomId(16);
+      const loader: ILoader = {
+        id: loaderId,
+        dispose: () => this.stopLoader(loaderId),
+      };
+      this.activeLoaders.add(loader.id);
+      return loader;
     },
-    getters: {
-        isLoading() {
-            return this.activeLoaders.size > 0;
-        }
+    stopLoader(loaderId: string) {
+      this.activeLoaders.delete(loaderId);
     },
-})
+    navaigateBackOrDefault(default_ = 'Home') {
+      if (window.history.length > 2) Router.go(-1);
+      else Router.push({ name: default_ });
+    },
+  },
+  getters: {
+    isLoading() {
+      return this.activeLoaders.size > 0;
+    },
+  },
+});

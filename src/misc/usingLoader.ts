@@ -1,5 +1,5 @@
-import { useGlobalStore } from "src/stores/global-store";
-import { using, usingAsync } from "./Disposable";
+import { useGlobalStore } from 'src/stores/global-store';
+import { using, usingAsync } from './Disposable';
 
 export function usingLoader(func: () => void) {
     const loader = useGlobalStore().newLoader();

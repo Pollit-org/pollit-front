@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { Post } from 'src/models/interfaces';
+import { Poll } from 'src/api/models/poll';
 import RecursiveComment from './RecursiveComment.vue';
+import { Comment } from 'src/api/models/comment';
 
 interface Props {
-  post: Post;
+  comments: Comment[];
 }
 const props = defineProps<Props>();
 </script>
@@ -11,10 +12,10 @@ const props = defineProps<Props>();
   <q-card>
     <q-card-section>
       <recursive-comment
-        v-for="(comment, index) in props.post.comments"
+        v-for="(comment, index) in props.comments"
         :key="index"
         :comment="comment"
-        :op-user="post.user"
+        :author="comment.author"
       />
     </q-card-section>
   </q-card>

@@ -9,127 +9,6 @@ declare module 'vue-router' {
   }
 }
 
-const post_data = {
-  user: {
-    username: 'didou',
-    profileLink: '/u/didou',
-  },
-  title: 'What do you drink for breakfast ?',
-  timeSincePost: '2 days ago',
-  votingOptions: [
-    {
-      name: 'coffee',
-      numVotes: 45,
-    },
-    {
-      name: 'tea',
-      numVotes: 35,
-    },
-  ],
-  tags: [
-    {
-      name: 'breakfast',
-      link: 'breakfast',
-    },
-  ],
-  comments: [
-    {
-      user: {
-        username: 'didou',
-        profileLink: '/u/didou',
-      },
-      timeSincePost: '38 mins ago',
-      upvotes: 18,
-      downvotes: 8,
-      commentText: 'Gigachads drink tea',
-      replies: [
-        {
-          user: {
-            username: 'flow',
-            profileLink: '/u/flow',
-          },
-          timeSincePost: '33 mins ago',
-          upvotes: 12,
-          downvotes: 3,
-          commentText: 'Better be a gigachad then',
-          replies: [],
-        },
-        {
-          user: {
-            username: 'flow',
-            profileLink: '/u/flow',
-          },
-          timeSincePost: '33 mins ago',
-          upvotes: 0,
-          downvotes: 0,
-          commentText: 'are you a gigachad ?',
-          replies: [
-            {
-              user: {
-                username: 'didou',
-                profileLink: '/u/didou',
-              },
-              timeSincePost: '31 mins ago',
-              upvotes: 10,
-              downvotes: 0,
-              commentText: 'ask your mom',
-              replies: [],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      user: {
-        username: 'didou',
-        profileLink: '/u/didou',
-      },
-      timeSincePost: '38 mins ago',
-      upvotes: 18,
-      downvotes: 8,
-      commentText: 'Gigachads drink tea',
-      replies: [
-        {
-          user: {
-            username: 'flow',
-            profileLink: '/u/flow',
-          },
-          timeSincePost: '33 mins ago',
-          upvotes: 12,
-          downvotes: 3,
-          commentText: 'Better be a gigachad then',
-          replies: [],
-        },
-        {
-          user: {
-            username: 'flow',
-            profileLink: '/u/flow',
-          },
-          timeSincePost: '33 mins ago',
-          upvotes: 0,
-          downvotes: 0,
-          commentText: 'are you a gigachad ?',
-          replies: [
-            {
-              user: {
-                username: 'didou',
-                profileLink: '/u/didou',
-              },
-              timeSincePost: '31 mins ago',
-              upvotes: 10,
-              downvotes: 0,
-              commentText: 'ask your mom',
-              replies: [],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
-
-const getPostById = (title: string) => post_data;
-
 const userSignedIn: UserRequirement = (store) => store.user != null;
 const userNotSignedIn: UserRequirement = (store) => store.user == null;
 const userHasTemporaryUserName: UserRequirement = (store) =>
@@ -146,9 +25,10 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/HomePage.vue'),
       },
       {
-        path: 'post/:title',
-        name: 'Post',
-        component: () => import('pages/PostPage.vue'),
+        path: 'polls/:pollId',
+        name: 'Poll',
+        component: () => import('pages/PollPage.vue'),
+        props: true,
         // props: route => ({ post: getPostById(route.params.title as string) })
       },
       {
