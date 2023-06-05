@@ -15,6 +15,10 @@ interface ConnectedUserActions {
     userName: string,
     password: string
   ) => PromiseOrNot<void>;
+  verifyEmailFromLink: (
+    userId: string,
+    emailVerificationToken: string
+  ) => PromiseOrNot<boolean>;
   signinWithGoogleAuthCode: (code: string) => PromiseOrNot<void>;
   signinWithGoogleAccessToken: (
     googleAccessToken: string
@@ -136,6 +140,18 @@ export const useConnectedUserStore = defineStore<
         if (this.user.claims.HasTemporaryUserName == 'True')
           this.router.push({ name: 'SetPermanentUserName' });
         else this.router.push({ name: 'Home' });
+      });
+    },
+    verifyEmailFromLink(userId, emailVerificationToken) {
+      return usingLoaderAsync(async () => {
+        try {
+          const response = await axiosPollit.post(`users/${userId}/verify-email`, { emailVerificationToken });
+          console.log(response.status);
+          
+          return response.status >= 200 && response.status < 300;
+        } catch {
+          return false;
+        }
       });
     },
     signinWithGoogleAuthCode(code: string) {
