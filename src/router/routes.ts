@@ -29,7 +29,6 @@ const routes: RouteRecordRaw[] = [
         name: 'Poll',
         component: () => import('pages/PollPage.vue'),
         props: true,
-        // props: route => ({ post: getPostById(route.params.title as string) })
       },
       {
         path: 'account-settings',
@@ -38,6 +37,12 @@ const routes: RouteRecordRaw[] = [
         meta: {
           userRequirements: [userSignedIn],
         },
+      },
+      {
+        path: 'verify-email',
+        name: 'VerifyEmail',
+        component: () => import('pages/VerifyEmailPage.vue'),
+        props: route => ({ userId: route.query.user, emailVerificationToken: route.query.token }),
       },
     ],
   },

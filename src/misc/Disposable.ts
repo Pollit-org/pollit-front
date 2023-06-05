@@ -2,17 +2,17 @@ export interface IDisposable {
     dispose: () => void;
 }
 
-export function using<T extends IDisposable>(resource: T, func: (resource: T) => void) {
+export function using<TDisposable extends IDisposable, TReturn>(resource: TDisposable, func: (resource: TDisposable) => TReturn): TReturn {
     try {
-        func(resource);
+        return func(resource);
     } finally {
         resource.dispose();
     }
 }
 
-export async function usingAsync<T extends IDisposable>(resource: T, func: (resource: T) => Promise<void>) {
+export async function usingAsync<T extends IDisposable, TReturn>(resource: T, func: (resource: T) => Promise<TReturn>) : Promise<TReturn> {
     try {
-        await func(resource);
+        return await func(resource);
     } finally {
         resource.dispose();
     }
