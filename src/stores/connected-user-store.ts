@@ -23,7 +23,7 @@ interface ConnectedUserActions {
   signinWithGoogleAccessToken: (
     googleAccessToken: string
   ) => PromiseOrNot<void>;
-  signinWithRefreshToken: () => PromiseOrNot<void>;
+  signinWithRefreshToken: (preventRouteChange?: boolean) => PromiseOrNot<void>;
   signinWithRefreshTokenIfAccessTokenExpiresSoon: () => PromiseOrNot<void>;
   setPermanentUserName: (userName: string) => PromiseOrNot<void>;
   setGender: (gender: string) => PromiseOrNot<void>;
@@ -146,9 +146,15 @@ export const useConnectedUserStore = defineStore<
       return usingLoaderAsync(async () => {
         try {
           const response = await axiosPollit.post(`users/${userId}/verify-email`, { emailVerificationToken });
-          console.log(response.status);
+          if (response.status < 200 || response.status >= 300)
+            return false;
           
-          return response.status >= 200 && response.status < 300;
+          
+          if (this.user?.claims.UserId !== userId)
+            this.user = null
+          else
+            await this.signinWithRefreshToken(true);
+          return true;
         } catch {
           return false;
         }
@@ -180,7 +186,7 @@ export const useConnectedUserStore = defineStore<
         else this.router.push({ name: 'Home' });
       });
     },
-    signinWithRefreshToken() {
+    signinWithRefreshToken(preventRouteChange = false) {
       return usingLoaderAsync(async () => {
         try {
           const { accessToken, refreshToken } = (
@@ -192,11 +198,12 @@ export const useConnectedUserStore = defineStore<
           this.user = buildUser(accessToken, refreshToken);
         } catch (e) {
           this.user = null;
-          this.router.push({ name: 'Signin' });
+          if (!preventRouteChange)
+            this.router.push({ name: 'Signin' });
           return;
         }
 
-        if (this.user.claims.HasTemporaryUserName == 'True')
+        if (this.user.claims.HasTemporaryUserName == 'True' && !preventRouteChange)
           this.router.push({ name: 'SetPermanentUserName' });
       });
     },
