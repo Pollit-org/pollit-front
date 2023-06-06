@@ -12,6 +12,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const goToSignin = () => Router.push({ name: 'Signin' });
+const goToHome = () => Router.push({ name: 'Home' });
 
 var connectedUserStore = useConnectedUserStore();
 let emailVerifiedWithSuccess: Ref<boolean | null> = ref(null);
@@ -34,7 +35,7 @@ console.log(emailVerifiedWithSuccess);
       Your email is now verified.
     </h1>
     <q-btn
-      v-if="emailVerifiedWithSuccess"
+      v-if="emailVerifiedWithSuccess && connectedUserStore.user == null"
       class="q-mt-sm"
       rounded
       outline
@@ -42,6 +43,16 @@ console.log(emailVerifiedWithSuccess);
       @click="goToSignin"
     >
       <small>Sign in</small>
+    </q-btn>
+    <q-btn
+      v-if="emailVerifiedWithSuccess && connectedUserStore.user != null"
+      class="q-mt-sm"
+      rounded
+      outline
+      color="info"
+      @click="goToHome"
+    >
+      <small>Start polling !</small>
     </q-btn>
   </pollit-page>
 </template>
