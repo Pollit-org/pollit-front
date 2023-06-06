@@ -139,7 +139,7 @@ export const useConnectedUserStore = defineStore<
 
         if (this.user.claims.HasTemporaryUserName == 'True')
           this.router.push({ name: 'SetPermanentUserName' });
-        else this.router.push({ name: 'Home' });
+        else this.router.push({ name: 'PromptPersonalInfo' });
       });
     },
     verifyEmailFromLink(userId, emailVerificationToken) {
@@ -227,7 +227,7 @@ export const useConnectedUserStore = defineStore<
           userName,
         });
         await this.signinWithRefreshToken();
-        this.router.push({ name: 'Home' });
+        this.router.push({ name: 'PromptPersonalInfo' });
       });
     },
     async setGender(gender: string) {
