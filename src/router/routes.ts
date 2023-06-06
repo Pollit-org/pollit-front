@@ -44,6 +44,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/VerifyEmailPage.vue'),
         props: route => ({ userId: route.query.user, emailVerificationToken: route.query.token }),
       },
+      {
+        path: 'prompt-info',
+        name: 'PromptPersonalInfo',
+        component: () => import('pages/PromptPersonalInfo.vue')
+      },
     ],
   },
   {
