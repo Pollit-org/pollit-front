@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useConnectedUserStore} from 'stores/connected-user-store';
+import { useConnectedUserStore } from 'stores/connected-user-store';
 import { ref } from 'vue';
 
 const connectedUserStore = useConnectedUserStore();
@@ -7,36 +7,33 @@ const connectedUserStore = useConnectedUserStore();
 let userName = ref('');
 
 const setPermanentUserName = async () => {
-    await connectedUserStore.setPermanentUserName(userName.value);    
-}
-
+  await connectedUserStore.setPermanentUserName(userName.value);
+};
 </script>
 
 <template>
-<q-form
-    ref="form"
-    v-model="valid"
->
+  <q-form ref="form" v-model="valid">
     <q-input
-        filled
-        color="light"
-        v-model="userName"
-        :readonly="loading"
-        :rules="[required]"
-        class="q-mb-xs"
-        clearable
-        label="User name"
-        >
+      filled
+      color="light"
+      v-model="userName"
+      :readonly="loading"
+      :rules="[required]"
+      class="q-mb-xs"
+      clearable
+      label="User name"
+    >
     </q-input>
     <q-btn
-        class="q-px-lg"
-        color="positive"
-        text-color="dark"
-        rounded
-        outlined
-        @click="setPermanentUserName"
+      type="submit"
+      class="q-px-lg"
+      color="positive"
+      text-color="dark"
+      rounded
+      outlined
+      @click="setPermanentUserName"
     >
-        Set user name
+      Set user name
     </q-btn>
-</q-form>
+  </q-form>
 </template>

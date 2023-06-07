@@ -48,6 +48,7 @@ const signinWithCredentials = () => {
     >
     </q-input>
     <q-btn
+      type="submit"
       class="q-px-xl"
       color="positive"
       text-color="dark"

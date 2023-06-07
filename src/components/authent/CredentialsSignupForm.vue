@@ -9,66 +9,67 @@ let email = ref('');
 let userName = ref('');
 let password = ref('');
 
-let formIsValid = ref(true)
+let formIsValid = ref(true);
 
-const emit = defineEmits(['onSignupSuccess'])
+const emit = defineEmits(['onSignupSuccess']);
 
 const signupWithCredentials = () => {
-    connectedUserStore.signupWithCredentials(email.value, userName.value, password.value)
-    emit('onSignupSuccess')
-}
-
+  connectedUserStore.signupWithCredentials(
+    email.value,
+    userName.value,
+    password.value
+  );
+  emit('onSignupSuccess');
+};
 </script>
 
 <template>
-<q-form
-    ref="form"
-    v-model="valid" 
->
+  <q-form ref="form" v-model="valid">
     <q-input
-        filled
-        color="light"
-        v-model="email"
-        :readonly="loading"
-        :rules="[requiredField]"
-        class="q-mb-xs"
-        clearable
-        label="Email"
-        type="email"
-        >
+      filled
+      color="light"
+      v-model="email"
+      :readonly="loading"
+      :rules="[requiredField]"
+      class="q-mb-xs"
+      clearable
+      label="Email"
+      type="email"
+    >
     </q-input>
     <q-input
-        filled
-        color="light"
-        v-model="userName"
-        :readonly="loading"
-        :rules="[requiredField]"
-        class="q-mb-xs"
-        clearable
-        label="Username"
-        >
+      filled
+      color="light"
+      v-model="userName"
+      :readonly="loading"
+      :rules="[requiredField]"
+      class="q-mb-xs"
+      clearable
+      label="Username"
+    >
     </q-input>
     <q-input
-        filled
-        color="light"
-        v-model="password"
-        :readonly="loading"
-        :rules="[required]"
-        class="q-mb-xs"
-        clearable
-        label="Password"
-        type="password"
+      filled
+      color="light"
+      v-model="password"
+      :readonly="loading"
+      :rules="[required]"
+      class="q-mb-xs"
+      clearable
+      label="Password"
+      type="password"
     >
     </q-input>
     <q-btn
-        class="q-px-xl"
-        color="positive"
-        text-color="dark"
-        rounded
-        outlined
-        @click="signupWithCredentials"
+      type="submit"
+      class="q-px-xl"
+      color="positive"
+      text-color="dark"
+      rounded
+      outlined
+      @click="signupWithCredentials"
     >
-        Sign up
+      Sign up
     </q-btn>
-</q-form>
+  </q-form>
 </template>
