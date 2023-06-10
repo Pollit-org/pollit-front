@@ -12,7 +12,7 @@ const setPermanentUserName = async () => {
 </script>
 
 <template>
-  <q-form ref="form" v-model="valid">
+  <q-form @submit="setPermanentUserName" v-model="valid">
     <q-input
       filled
       color="light"
@@ -31,7 +31,6 @@ const setPermanentUserName = async () => {
       text-color="dark"
       rounded
       outlined
-      @click="setPermanentUserName"
     >
       Set user name
     </q-btn>

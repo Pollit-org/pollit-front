@@ -22,7 +22,7 @@ const signinWithCredentials = () => {
 </script>
 
 <template>
-  <q-form ref="form" v-model="valid">
+  <q-form @submit="signinWithCredentials" ref="form" v-model="valid">
     <q-input
       filled
       color="light"
@@ -54,7 +54,6 @@ const signinWithCredentials = () => {
       text-color="dark"
       rounded
       outlined
-      @click="signinWithCredentials"
     >
       {{ $t('auth.signin.cta') }}
     </q-btn>

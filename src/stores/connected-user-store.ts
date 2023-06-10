@@ -122,7 +122,7 @@ export const useConnectedUserStore = defineStore<
         else this.router.push({ name: 'Home' });
       });
     },
-    async signupWithCredentials(
+    signupWithCredentials(
       email: string,
       userName: string,
       password: string
@@ -221,7 +221,7 @@ export const useConnectedUserStore = defineStore<
         await this.signinWithRefreshToken();
       }
     },
-    async setPermanentUserName(userName: string) {
+    setPermanentUserName(userName: string) {
       return usingLoaderAsync(async () => {
         await axiosPollit.patch(`users/${this.user?.claims.UserId}/userName`, {
           userName,
@@ -230,7 +230,7 @@ export const useConnectedUserStore = defineStore<
         this.router.push({ name: 'PromptPersonalInfo' });
       });
     },
-    async setGender(gender: string) {
+    setGender(gender: string) {
       return usingLoaderAsync(async () => {
         await axiosPollit.patch(`users/${this.user?.claims.UserId}/gender`, {
           gender,
@@ -238,7 +238,7 @@ export const useConnectedUserStore = defineStore<
         await this.fetchPrivateProfile();
       });
     },
-    async setBirthdate(year: number, month: number, day: number) {
+    setBirthdate(year: number, month: number, day: number) {
       return usingLoaderAsync(async () => {
         await axiosPollit.patch(`users/${this.user?.claims.UserId}/birthdate`, {
           year,
@@ -248,7 +248,7 @@ export const useConnectedUserStore = defineStore<
         await this.fetchPrivateProfile();
       });
     },
-    async fetchPrivateProfile() {
+    fetchPrivateProfile() {
       return usingLoaderAsync(async () => {
         const { data: privateProfileResponse } =
           await axiosPollit.get<PrivateProfile>(

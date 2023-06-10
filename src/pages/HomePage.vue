@@ -15,21 +15,22 @@ const globalStore = useGlobalStore();
 const props = withDefaults(defineProps<Props>(), {});
 
 const searchText = ref(props.search ?? '');
+const tags = ref(props.tags ?? '');
 
 const removeTag = (tag: string) => {
-  var tags =
-    props.tags
+  tags.value =
+    tags.value
       ?.split(' ')
       .filter((t) => t != tag)
       .join(' ') ?? '';
 
-  Router.push({
-    name: 'Home',
-    query: {
-      q: searchText.value.length > 0 ? searchText.value : undefined,
-      tags: tags?.length > 0 ? tags : undefined,
-    },
-  });
+  submitSearch();
+};
+
+const clearSearch = (tag: string) => {
+  searchText.value = '';
+
+  submitSearch();
 };
 
 const submitSearch = () =>
@@ -37,7 +38,7 @@ const submitSearch = () =>
     name: 'Home',
     query: {
       q: searchText.value.length > 0 ? searchText.value : undefined,
-      tags: props.tags,
+      tags: tags.value?.length > 0 ? tags.value : undefined,
     },
   });
 </script>
@@ -57,7 +58,7 @@ const submitSearch = () =>
           <q-icon
             v-if="searchText !== ''"
             name="close"
-            @click="searchText = ''"
+            @click="clearSearch"
             class="cursor-pointer"
           />
           <q-btn

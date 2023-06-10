@@ -24,7 +24,7 @@ const signupWithCredentials = () => {
 </script>
 
 <template>
-  <q-form ref="form" v-model="valid">
+  <q-form @submit="signupWithCredentials" ref="form" v-model="valid">
     <q-input
       filled
       color="light"
@@ -67,7 +67,6 @@ const signupWithCredentials = () => {
       text-color="dark"
       rounded
       outlined
-      @click="signupWithCredentials"
     >
       Sign up
     </q-btn>
