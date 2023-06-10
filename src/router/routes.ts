@@ -16,13 +16,14 @@ const userHasTemporaryUserName: UserRequirement = (store) =>
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/',
+    path: '',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
         path: '',
         name: 'Home',
         component: () => import('pages/HomePage.vue'),
+        props: route => ({ search: route.query.q, tags: route.query.tags }),
       },
       {
         path: 'polls/:pollId',
