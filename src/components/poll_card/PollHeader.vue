@@ -25,7 +25,7 @@ const poll = inject(postInjectionKey) as Poll;
           v-for="tag in poll.tags"
           :key="tag"
           :label="'#' + tag"
-          :to="'tags/' + tag"
+          :to="'/?tags=' + tag"
           no-caps
           rounded
           class="q-ma-xs text-weight-bold"

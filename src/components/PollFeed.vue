@@ -1,9 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import PollCard from './poll_card/PollCard.vue';
 import Router from 'src/router';
 import { usePollStore } from 'src/stores/poll-store';
 import { Poll } from 'src/api/models/poll';
+import { onBeforeRouteUpdate, useRoute } from 'vue-router';
+import { QInfiniteScroll } from 'quasar';
+
+interface Props {
+  search?: string;
+  tags?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {});
 
 const pollStore = usePollStore();
 
@@ -16,6 +25,25 @@ const viewPoll = (poll: Poll) => {
   });
 };
 
+const setFilters = () =>
+  pollStore.setFilters({
+    search: props.search ?? null,
+    tags: props.tags?.split(' ') ?? null,
+  });
+
+const onPropsChanged = () => {
+  pollStore.reset();
+  setFilters();
+  infiniteScroll.value?.setIndex(0);
+  infiniteScroll.value?.resume();
+};
+
+const infiniteScroll = ref<QInfiniteScroll>(null!);
+watch(() => props, onPropsChanged, {
+  immediate: true,
+  deep: true,
+});
+
 const onLoadRef = (index: number, done: (stop?: boolean) => void) => {
   pollStore.fetchMore().then((hasMore) => done(!hasMore));
 };
@@ -23,7 +51,7 @@ const onLoadRef = (index: number, done: (stop?: boolean) => void) => {
 
 <template>
   <div>
-    <q-infinite-scroll @load="onLoadRef" :offset="250">
+    <q-infinite-scroll ref="infiniteScroll" @load="onLoadRef" :offset="250">
       <poll-card
         v-for="poll in pollStore.$state.polls"
         :key="poll.pollId"

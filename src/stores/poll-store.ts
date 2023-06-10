@@ -5,9 +5,16 @@ import { axiosPollit } from 'src/axios';
 import { usingLoaderAsync } from 'src/misc/usingLoader';
 import { AxiosError } from 'axios';
 
+export interface PollFeedFilters {
+  search: string | null
+  tags: string[] | null
+}
+
 interface PollStoreActions {
   fetchMore: () => Promise<boolean>;
   setCurrentPollId: (id: string) => Promise<void>;
+  setFilters: (filters: PollFeedFilters) => void;
+  reset: () => void;
 }
 
 interface PollStoreState {
@@ -17,6 +24,7 @@ interface PollStoreState {
   currentPoll: Poll | null;
   currentPollComments: Comment[] | null;
   currentPollNotFound: boolean;
+  filters: PollFeedFilters;
 }
 
 type PollStoreGetters = _GettersTree<PollStoreState>;
@@ -28,22 +36,28 @@ export type PollStore = Store<
   PollStoreActions
 >;
 
+const buildDefaultState = () => {
+  return {
+    polls: null,
+    currentPage: null,
+    hasNextPage: true,
+    currentPoll: null,
+    currentPollComments: null,
+    currentPollNotFound: false,
+    filters: {
+      search: null,
+      tags: null
+    }
+  }
+};
+
 export const usePollStore = defineStore<
   string,
   PollStoreState,
   PollStoreGetters,
   PollStoreActions
 >('PollStore', {
-  state: () => {
-    return {
-      polls: null,
-      currentPage: null,
-      hasNextPage: true,
-      currentPoll: null,
-      currentPollComments: null,
-      currentPollNotFound: false,
-    };
-  },
+  state: buildDefaultState,
   actions: {
     async fetchMore() {
       if (this.polls == null) this.polls = [];
@@ -51,9 +65,22 @@ export const usePollStore = defineStore<
       if (this.currentPage == null) this.currentPage = 0;
       else this.currentPage += 1;
 
+      let url = `polls/feed?page=${this.currentPage}&pageSize=1`;
+      if (this.filters.tags != null && this.filters.tags?.length > 0) {
+        this.filters.tags.forEach(tag => {
+          url += "&tags=" + tag;
+        });
+      }
+      if (this.filters.search == null) {
+        url += '&orderBy=createdAt&order=descending';
+      }
+      else {
+        url += "&search=" + this.filters.search;
+      }
+
       const { items, options, hasNextPage } = (
         await axiosPollit.get(
-          `polls/feed?page=${this.currentPage}&pageSize=1&orderBy=createdAt&order=descending`
+          url
         )
       ).data;
 
@@ -86,6 +113,12 @@ export const usePollStore = defineStore<
         }
       });
     },
+    setFilters(filters: PollFeedFilters) {
+      this.filters = filters;
+    },
+    reset() {
+      this.$state = buildDefaultState();
+    }
   },
   getters: {},
 });
