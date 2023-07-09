@@ -24,10 +24,8 @@
 
 <script setup lang="ts">
 import { useGlobalStore } from 'src/stores/global-store';
-import PSpinnerPage from 'components/PSpinnerPage.vue';
 import PSpinner from 'components/PSpinner.vue';
 import ErrorNotFound from 'src/pages/ErrorNotFound.vue';
-import Router from 'src/router';
 import { computed } from 'vue';
 
 export interface Props {
@@ -57,6 +55,6 @@ const showSpinner = computed(
 );
 
 const goBack = () => {
-  globalStore.navaigateBackOrDefault(props.backButtonFallbackRoute);
+  globalStore.navigateBackOrDefault(props.backButtonFallbackRoute);
 };
 </script>

@@ -1,19 +1,12 @@
 <script setup lang="ts">
 import {
-  type CredentialResponse,
-  useOneTap,
   AuthCodeFlowSuccessResponse,
   AuthCodeFlowErrorResponse,
   useTokenClient,
-  useCodeClient,
-  ImplicitFlowErrorResponse,
-  ImplicitFlowSuccessResponse,
 } from 'vue3-google-signin';
 import { useConnectedUserStore } from 'stores/connected-user-store';
 
 const connectedUserStore = useConnectedUserStore();
-
-const emit = defineEmits(['onSigninSuccess']);
 
 // todo maybe later ? one tap signin
 // useOneTap({

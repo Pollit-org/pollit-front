@@ -11,7 +11,7 @@ interface GlobalStoreActions {
   setApiError: (apiError: string) => Promise<void> | void;
   newLoader: () => ILoader;
   stopLoader: (loaderId: string) => Promise<void> | void;
-  navaigateBackOrDefault: (default_?: string) => void;
+  navigateBackOrDefault: (default_?: string) => void;
 }
 
 interface GlobalStoreState {
@@ -71,7 +71,7 @@ export const useGlobalStore = defineStore<
     stopLoader(loaderId: string) {
       this.activeLoaders.delete(loaderId);
     },
-    navaigateBackOrDefault(default_ = 'Home') {
+    navigateBackOrDefault(default_ = 'Home') {
       if (window.history.length > 2) Router.go(-1);
       else Router.push({ name: default_ });
     },

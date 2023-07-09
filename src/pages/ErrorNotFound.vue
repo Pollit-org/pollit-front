@@ -13,7 +13,7 @@
         color="white"
         text-color="blue"
         unelevated
-        @click="globalStore.navaigateBackOrDefault()"
+        @click="globalStore.navigateBackOrDefault()"
         label="Go back"
         no-caps
       />

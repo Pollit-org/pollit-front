@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Poll } from 'src/api/models/poll';
 import RecursiveComment from './RecursiveComment.vue';
 import { Comment } from 'src/api/models/comment';
 

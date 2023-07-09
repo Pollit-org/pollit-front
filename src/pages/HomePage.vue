@@ -27,7 +27,7 @@ const removeTag = (tag: string) => {
   submitSearch();
 };
 
-const clearSearch = (tag: string) => {
+const clearSearch = () => {
   searchText.value = '';
 
   submitSearch();
