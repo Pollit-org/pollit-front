@@ -15,7 +15,7 @@ provide(postInjectionKey, props.poll);
 </script>
 
 <template>
-  <q-card class="poll-post q-mt-md q-mt-md bg-white">
+  <q-card class="q-mt-md q-mt-md bg-white">
     <poll-header />
     <poll-title />
     <poll-options />

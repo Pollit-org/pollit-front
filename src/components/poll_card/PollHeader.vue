@@ -12,12 +12,10 @@ const poll = inject(postInjectionKey) as Poll;
   <q-card-section>
     <div class="row items-center">
       <div>
-        <div class="text-weight-medium">
+        <div class="text-weight-small">
           {{ poll.author }}
+          <span class="text-weight-light text-italic text-caption">{{ moment(poll.createdAt).fromNow() }}</span>
         </div>
-        <span class="text-weight-light">{{
-          moment(poll.createdAt).fromNow()
-        }}</span>
       </div>
       <q-space />
       <div class="row q-pa-md wrap desktop-only">
