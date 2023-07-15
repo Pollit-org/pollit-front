@@ -2,8 +2,10 @@
 import { useConnectedUserStore } from 'stores/connected-user-store';
 import { ref } from 'vue';
 import { requiredField } from 'src/misc/validationRules';
+import { useGlobalStore } from 'src/stores/global-store';
 
 const connectedUserStore = useConnectedUserStore();
+const globalStore = useGlobalStore();
 
 let emailOrUserName = ref('');
 let password = ref('');
@@ -22,12 +24,12 @@ const signinWithCredentials = () => {
 </script>
 
 <template>
-  <q-form @submit="signinWithCredentials" ref="form" v-model="valid">
+  <q-form @submit="signinWithCredentials" ref="form">
     <q-input
       filled
       color="light"
       v-model="emailOrUserName"
-      :readonly="loading"
+      :readonly="globalStore.isLoading"
       :rules="[requiredField]"
       class="q-mb-xs"
       clearable
@@ -39,8 +41,8 @@ const signinWithCredentials = () => {
       filled
       color="light"
       v-model="password"
-      :readonly="loading"
-      :rules="[required]"
+      :readonly="globalStore.isLoading"
+      :rules="[requiredField]"
       class="q-mb-xs"
       clearable
       label="Password"
@@ -48,6 +50,7 @@ const signinWithCredentials = () => {
     >
     </q-input>
     <q-btn
+      :disable="!formIsValid"
       type="submit"
       class="q-px-xl"
       color="positive"

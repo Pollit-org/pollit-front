@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
         path: '',
         name: 'Home',
         component: () => import('pages/HomePage.vue'),
-        props: route => ({ search: route.query.q, tags: route.query.tags }),
+        props: (route) => ({ search: route.query.q, tags: route.query.tags }),
       },
       {
         path: 'polls/:pollId',
@@ -43,17 +43,20 @@ const routes: RouteRecordRaw[] = [
         path: 'verify-email',
         name: 'VerifyEmail',
         component: () => import('pages/VerifyEmailPage.vue'),
-        props: route => ({ userId: route.query.user, emailVerificationToken: route.query.token }),
+        props: (route) => ({
+          userId: route.query.user,
+          emailVerificationToken: route.query.token,
+        }),
       },
       {
         path: 'prompt-info',
         name: 'PromptPersonalInfo',
-        component: () => import('pages/PromptPersonalInfo.vue')
+        component: () => import('pages/PromptPersonalInfo.vue'),
       },
     ],
   },
   {
-    path: '/',
+    path: '',
     component: () => import('src/layouts/OnboardingLayout.vue'),
     children: [
       {
@@ -79,6 +82,15 @@ const routes: RouteRecordRaw[] = [
         meta: {
           userRequirements: [userSignedIn, userHasTemporaryUserName],
         },
+      },
+      {
+        path: 'reset-password',
+        name: 'ResetPassword',
+        component: () => import('pages/ResetPasswordPage.vue'),
+        props: (route) => ({
+          userId: route.query.user,
+          resetPasswordToken: route.query.token,
+        }),
       },
     ],
   },

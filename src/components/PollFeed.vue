@@ -4,7 +4,6 @@ import PollCard from './poll_card/PollCard.vue';
 import Router from 'src/router';
 import { usePollStore } from 'src/stores/poll-store';
 import { Poll } from 'src/api/models/poll';
-import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 import { QInfiniteScroll } from 'quasar';
 
 interface Props {
@@ -38,6 +37,7 @@ const onPropsChanged = () => {
   infiniteScroll.value?.resume();
 };
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const infiniteScroll = ref<QInfiniteScroll>(null!);
 watch(() => props, onPropsChanged, {
   immediate: true,

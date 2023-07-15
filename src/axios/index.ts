@@ -22,7 +22,7 @@ const authorizationHeaderInterceptor = async (request: AxiosRequestConfig) => {
   return request;
 };
 
-const refreshAuthLogic = async (_) =>
+const refreshAuthLogic = async () =>
   await useConnectedUserStore().signinWithRefreshToken();
 
 createAuthRefreshInterceptor(axiosPollit, refreshAuthLogic, {

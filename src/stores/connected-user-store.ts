@@ -33,7 +33,17 @@ interface ConnectedUserActions {
     day: number
   ) => PromiseOrNot<void>;
   fetchPrivateProfile: () => PromiseOrNot<void>;
-  signout: () => PromiseOrNot<void>;
+  signout: (preventRouteChange?: boolean) => PromiseOrNot<void>;
+  requestResetPassword: (email?: string) => PromiseOrNot<void>;
+  canResetPassword: (
+    userId: string,
+    resetPasswordToken: string
+  ) => PromiseOrNot<boolean>;
+  resetPassword: (
+    userId: string,
+    resetPasswordToken: string,
+    newPassword: string
+  ) => Promise<void>;
 }
 
 interface ConnectedUserState {
@@ -122,11 +132,7 @@ export const useConnectedUserStore = defineStore<
         else this.router.push({ name: 'Home' });
       });
     },
-    signupWithCredentials(
-      email: string,
-      userName: string,
-      password: string
-    ) {
+    signupWithCredentials(email: string, userName: string, password: string) {
       return usingLoaderAsync(async () => {
         await axiosPollit.post('auth/signup', { email, userName, password });
         const { accessToken, refreshToken } = (
@@ -145,15 +151,14 @@ export const useConnectedUserStore = defineStore<
     verifyEmailFromLink(userId, emailVerificationToken) {
       return usingLoaderAsync(async () => {
         try {
-          const response = await axiosPollit.post(`users/${userId}/verify-email`, { emailVerificationToken });
-          if (response.status < 200 || response.status >= 300)
-            return false;
-          
-          
-          if (this.user?.claims.UserId !== userId)
-            this.user = null
-          else
-            await this.signinWithRefreshToken(true);
+          const response = await axiosPollit.post(
+            `users/${userId}/verify-email`,
+            { emailVerificationToken }
+          );
+          if (response.status < 200 || response.status >= 300) return false;
+
+          if (this.user?.claims.UserId !== userId) this.user = null;
+          else await this.signinWithRefreshToken(true);
           return true;
         } catch {
           return false;
@@ -198,12 +203,14 @@ export const useConnectedUserStore = defineStore<
           this.user = buildUser(accessToken, refreshToken);
         } catch (e) {
           this.user = null;
-          if (!preventRouteChange)
-            this.router.push({ name: 'Signin' });
+          if (!preventRouteChange) this.router.push({ name: 'Signin' });
           return;
         }
 
-        if (this.user.claims.HasTemporaryUserName == 'True' && !preventRouteChange)
+        if (
+          this.user.claims.HasTemporaryUserName == 'True' &&
+          !preventRouteChange
+        )
           this.router.push({ name: 'SetPermanentUserName' });
       });
     },
@@ -254,19 +261,50 @@ export const useConnectedUserStore = defineStore<
           await axiosPollit.get<PrivateProfile>(
             `users/${this.user?.claims.UserId}/profile/private`
           );
-        this.user!.privateProfile = privateProfileResponse;
+        if (this.user) this.user.privateProfile = privateProfileResponse;
       });
     },
-    signout() {
+    signout(preventRouteChange?: boolean) {
       return usingLoader(() => {
         this.user = null;
+        if (preventRouteChange) return;
+
         this.router.push({ name: 'Home' });
+      });
+    },
+    requestResetPassword(email?: string) {
+      return usingLoaderAsync(async () => {
+        await axiosPollit.post('auth/requestResetPasswordLink', {
+          email: email,
+        });
+      });
+    },
+    canResetPassword(userId: string, resetPasswordToken: string) {
+      return usingLoaderAsync(async () => {
+        const response = await axiosPollit.get(
+          `auth/resetPassword/fromResetPasswordToken/verifyValidity?userId=${userId}&resetPasswordToken=${resetPasswordToken}`
+        );
+
+        return response.data.isValid;
+      });
+    },
+    resetPassword(
+      userId: string,
+      resetPasswordToken: string,
+      newPassword: string
+    ) {
+      return usingLoaderAsync(async () => {
+        await axiosPollit.post('auth/resetPassword/fromResetPasswordToken', {
+          userId: userId,
+          resetPasswordToken: resetPasswordToken,
+          newPassword: newPassword,
+        });
       });
     },
   },
   getters: {
     userName() {
-      return this.user!.claims.UserName;
+      return this.user?.claims.UserName ?? '';
     },
   },
 });
