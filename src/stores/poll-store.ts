@@ -14,6 +14,11 @@ interface PollStoreActions {
   setCurrentPollId: (id: string) => Promise<void>;
   setFilters: (filters: PollFeedFilters) => void;
   reset: () => void;
+  publishPoll: (
+    title: string,
+    pollOptions: string[],
+    tags: string[]
+  ) => Promise<void>;
 }
 
 interface PollStoreState {
@@ -112,6 +117,16 @@ export const usePollStore = defineStore<
     },
     reset() {
       this.$state = buildDefaultState();
+    },
+    publishPoll(title: string, pollOptions: string[], tags: string[]) {
+      return usingLoaderAsync(async () => {
+        const res = (await axiosPollit.post('polls', {
+          title: title,
+          options: pollOptions,
+          tags: tags,
+        })).data;
+        this.router.push({name: 'Poll', params: {'pollId': res.pollId}})
+      });
     },
   },
   getters: {},

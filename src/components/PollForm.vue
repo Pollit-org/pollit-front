@@ -1,41 +1,40 @@
 <template>
-  <q-form @submit="submitForm" ref="pollForm" @click="showOptions = true">
+  <q-form @submit="submitForm" ref="pollForm" @click="showPollFormContent = true">
     <q-card bordered>
       <q-input
         dense
-        class="q-pt-md q-pl-md q-pb-none"
+        autogrow
+        class="q-pt-md q-pl-md"
         v-model="question"
         label="Just poll it..."
-        lazy-rules="ondemand"
-        :rules="[(val) => /\S/.test(val) || 'Question is required']"
+        :rules="[(val) => /\S/.test(val) || 'Question is required', (val) => val.length < 125 || '125 characters max']"
       />
-      <q-card-section class="q-pb-xs" v-if="showOptions">
+      <q-card-section class="q-pb-xs" v-if="showPollFormContent">
         <q-list bordered dense>
-          <q-item v-for="(option, index) in options" :key="index" dense>
+          <q-item v-for="(option, index) in pollOptions" :key="index" dense>
             <q-item-section dense>
               <q-input
                 size="xs"
                 class="q-pb-sm"
-                v-model="options[index]"
+                v-model="pollOptions[index]"
                 :placeholder="'option ' + (index + 1)"
-                lazy-rules="ondemand"
-                :rules="[(val) => /\S/.test(val) || 'Option can\'t be blank']"
-                :disable="index === options.length - 1"
+                :rules="[(val) => /\S/.test(val) || 'Option can\'t be blank', () => pollOptions.length == (new Set(pollOptions)).size || 'Options must all be different']"
+                :disable="index === pollOptions.length - 1"
                 dense
               />
-              <q-tooltip v-if="index === options.length - 1"
-                >"{{ default_option_text }}" default option can't be removed.</q-tooltip
+              <q-tooltip v-if="index === pollOptions.length - 1"
+                >"{{ defaultOptionText }}" default option can't be removed.</q-tooltip
               >
             </q-item-section>
             <q-item-section
               side
-              v-if="index !== options.length - 1 && options.length > 3"
+              v-if="index !== pollOptions.length - 1 && pollOptions.length > 3"
             >
               <q-btn dense flat icon="close" @click="removeOption(index)" />
             </q-item-section>
           </q-item>
           <q-btn
-            v-if="options.length <= 10"
+            v-if="pollOptions.length <= 10"
             dense
             size="xs"
             color="primary"
@@ -45,13 +44,32 @@
           />
         </q-list>
       </q-card-section>
-      <q-card-actions>
+      <q-card-section class="q-pt-none q-pb-none" v-if="showPollFormContent">
+        <q-select
+          v-model="selectedTags"
+          :options="filteredTags"
+          label="Tags..."
+          use-chips
+          dense
+          filled
+          squared
+          multiple
+          use-input
+          @filter="filterFn"
+          new-value-mode="add-unique"
+          hide-dropdown-icon
+          optionsDense
+          max-values="3"
+          :rules="[() => selectedTags.length > 0 || 'At least one tag is required.']"
+        />
+      </q-card-section>
+      <q-card-actions class="q-pt-none">
         <q-btn
           size="sm"
           type="submit"
           color="primary"
           label="Create Poll"
-          :disable="options.length < 3"
+          :disable="pollOptions.length < 3"
         />
       </q-card-actions>
     </q-card>
@@ -60,35 +78,57 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePollStore } from 'stores/poll-store';
 
-const default_option_text = "I don't know";
+const pollStore = usePollStore();
+
+// POLL OPTIONS
+
+const defaultOptionText = "I don't know";
 const question = ref('');
-const options = ref(['', '', default_option_text]);
-const showOptions = ref(false);
+const pollOptions = ref(['', '', defaultOptionText]);
+const showPollFormContent = ref(false);
 const pollForm = ref(null);
 
 const addOption = () => {
-  options.value.splice(options.value.length - 1, 0, ''); // add a blank option before the "I don't know" option
+  pollOptions.value.splice(pollOptions.value.length - 1, 0, ''); // add a blank option before the "I don't know" option
 };
 
 const removeOption = (index: number) => {
-  if (index === options.value.length - 1 || options.value.length <= 3) {
+  if (index === pollOptions.value.length - 1 || pollOptions.value.length <= 3) {
     // if trying to remove the "I don't know" option, or having less than 2 voting options
     // do nothing
     return;
   }
-  options.value.splice(index, 1);
+  pollOptions.value.splice(index, 1);
 };
 
 const submitForm = () => {
-  // Handle form submission here
-  console.log('Form submitted!');
+  pollOptions
+  pollStore.publishPoll(question.value, pollOptions.value, selectedTags.value);
 };
 
-document.addEventListener('click', (event) => {
-  if (event.target.closest('.q-form') === null) {
-    showOptions.value = false;
-    pollForm.value.reset();
+// TAGS
+
+const selectedTags = ref([]);
+
+const existingTags = ['TO DO', 'ADD TAGS API', 'RETRIEVE ALL BY DESCENDED ORDER (# usages in posts)'];
+
+const filteredTags = ref(existingTags);
+
+const filterFn = (val, update) => {
+  if (val === '') {
+    update(() => {
+      filteredTags.value = existingTags;
+    });
+    return;
   }
-});
+
+  update(() => {
+    const needle = val.toLowerCase();
+    filteredTags.value = existingTags.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+  });
+};
+
+// OTHER
 </script>
