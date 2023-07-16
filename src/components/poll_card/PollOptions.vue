@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue';
-import { postInjectionKey } from './injection_keys';
 import { Poll, PollOption } from 'src/api/models/poll';
 import { usePollStore } from 'src/stores/poll-store';
 
-//const poll = inject(postInjectionKey) as Poll;
 interface Props {
   poll: Poll;
 }
@@ -56,6 +54,7 @@ const buildOptionKey: (option: PollOption) => string = (option) => {
           </q-item-section>
         </q-item>
         <q-linear-progress
+          v-if="poll.hasMyVote"
           animation-speed="1000"
           :color="option.hasMyVote ? 'primary' : 'secondary'"
           :value="
@@ -69,6 +68,3 @@ const buildOptionKey: (option: PollOption) => string = (option) => {
     <!-- </q-scroll-area> -->
   </q-card-section>
 </template>
-
-<style>
-</style>
