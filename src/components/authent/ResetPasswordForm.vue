@@ -39,11 +39,7 @@ const resetPassword = () => {
   connectedUserStore
     .resetPassword(props.userId, props.resetPasswordToken, newPassword.value)
     .then(() => {
-      console.log('bout to emit');
-
       emit('resetPasswordSuccess', 'null');
-
-      console.log('emitted');
     });
 };
 </script>

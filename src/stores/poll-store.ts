@@ -108,7 +108,9 @@ export const usePollStore = defineStore<
             .data.items?.[0] ??
           null;
 
-        const getCommentsAsync = axiosPollit.get(`polls/${id}/comments`);
+        const getCommentsAsync = axiosPollit.get(
+          `polls/${id}/comments?MaxRecursiveDepth=200`
+        );
 
         try {
           this.currentPollComments = (await getCommentsAsync).data.items;

@@ -13,5 +13,5 @@ const props = defineProps<Props>();
 
 <template>
   <poll-card :poll="props.poll" class="q-mb-xs" />
-  <comment-section :comments="props.comments" />
+  <comment-section :poll-id="poll.pollId" :comments="props.comments" />
 </template>
