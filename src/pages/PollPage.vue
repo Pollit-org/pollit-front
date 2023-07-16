@@ -11,7 +11,7 @@ const props = defineProps<Props>();
 
 const pollStore = usePollStore();
 
-pollStore.setCurrentPollId(props.pollId);
+pollStore.setCurrentPoll(props.pollId);
 </script>
 
 <template>
