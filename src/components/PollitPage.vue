@@ -11,7 +11,7 @@
         (props.verticalCenter || showSpinner ? 'self-center ' : '') +
         (props.textCenter ? 'text-center ' : '')
       "
-      :style="'width: 80%; max-width:' + props.maxWidth"
+      :style="'width: 95%; max-width:' + props.maxWidth"
     >
       <error-not-found v-if="is404"></error-not-found>
       <div v-else-if="showSpinner" class="flex justify-center self-center">

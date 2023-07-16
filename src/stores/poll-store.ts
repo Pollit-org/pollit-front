@@ -54,6 +54,7 @@ const buildDefaultState = () => {
     currentPage: null,
     hasNextPage: true,
     currentPoll: null,
+    currentPollDetailedResults: null,
     currentPollComments: null,
     currentPollNotFound: false,
     filters: {

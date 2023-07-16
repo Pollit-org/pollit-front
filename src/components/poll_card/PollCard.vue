@@ -14,18 +14,14 @@ interface Props {
 const props = defineProps<Props>();
 provide(postInjectionKey, props.poll);
 
-const hovered = ref(false);
 </script>
 
 <template >
   <q-card
     :key="props.poll.pollId + props.poll.hasMyVote + props.poll.totalVotesCount"
-    @mouseover="hovered = true"
-    @mouseleave="hovered = false"
-    :bordered="hovered"
     class="q-mt-md q-mt-md bg-white"
   >
-    <poll-header />
+    <poll-header class="q-pb-none"/>
     <poll-title />
     <poll-options :poll="poll" v-if="!props.poll.hasMyVote"/>
     <poll-results :poll="poll" v-if="props.poll.hasMyVote"/>
