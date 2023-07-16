@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import moment from 'moment';
-import { comment } from 'postcss';
 import { Comment } from 'src/api/models/comment';
 import { usePollStore } from 'src/stores/poll-store';
 import { ref } from 'vue';
@@ -11,17 +10,11 @@ interface Props {
   isRoot: boolean;
 }
 
-type Reply = {
-  message: string;
-  toCommentId: string;
-};
-
 const pollStore = usePollStore();
 
 const currentReply = ref<string | null>(null);
 
 const startReply = () => (currentReply.value = '');
-const cancelReply = () => (currentReply.value = null);
 
 const postReply = () => {
   if (currentReply.value == null) return;
