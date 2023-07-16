@@ -28,22 +28,23 @@ const isFormValid = computed(
 
 const t = useI18n().t;
 
-const ruleConfirmPasswordMustmatchPassword = () => passwordsMatch.value ? true : t('auth.resetPassword.passwordsMismatchErrorLabel');
+const ruleConfirmPasswordMustmatchPassword = () =>
+  passwordsMatch.value
+    ? true
+    : t('auth.resetPassword.passwordsMismatchErrorLabel');
 
 const emit = defineEmits(['resetPasswordSuccess']);
 
 const resetPassword = () => {
-  connectedUserStore.resetPassword(
-    props.userId,
-    props.resetPasswordToken,
-    newPassword.value
-  ).then(() => {
-    console.log('bout to emit');
+  connectedUserStore
+    .resetPassword(props.userId, props.resetPasswordToken, newPassword.value)
+    .then(() => {
+      console.log('bout to emit');
 
-    emit('resetPasswordSuccess', 'null');
+      emit('resetPasswordSuccess', 'null');
 
-    console.log('emitted');
-  });
+      console.log('emitted');
+    });
 };
 </script>
 
@@ -53,11 +54,11 @@ const resetPassword = () => {
       filled
       color="light"
       v-model="newPassword"
-      :readonly="globalStore.isLoading"
+      :readonly="globalStore.isLoadingGlobal"
       :rules="[requiredField]"
       class="q-mb-xs"
       clearable
-      :label=" $t('auth.resetPassword.newPasswordInputLabel')"
+      :label="$t('auth.resetPassword.newPasswordInputLabel')"
       type="password"
     >
     </q-input>
@@ -65,11 +66,11 @@ const resetPassword = () => {
       filled
       color="light"
       v-model="confirmNewPassword"
-      :readonly="globalStore.isLoading"
+      :readonly="globalStore.isLoadingGlobal"
       :rules="[requiredField, ruleConfirmPasswordMustmatchPassword]"
       class="q-mb-xs"
       clearable
-      :label=" $t('auth.resetPassword.confirmNewPasswordInputLabel')"
+      :label="$t('auth.resetPassword.confirmNewPasswordInputLabel')"
       type="password"
     >
     </q-input>

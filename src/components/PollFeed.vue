@@ -56,7 +56,7 @@ const onLoadRef = (index: number, done: (stop?: boolean) => void) => {
       <poll-form class="q-pt-sm"></poll-form>
       <poll-card
         v-for="poll in pollStore.$state.polls"
-        :key="poll.pollId"
+        :key="poll.pollId + poll.hasMyVote + poll.totalVotesCount"
         :poll="poll"
         class="cursor-pointer"
         @click="viewPoll(poll)"

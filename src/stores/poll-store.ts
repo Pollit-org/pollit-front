@@ -12,12 +12,19 @@ export interface PollFeedFilters {
 interface PollStoreActions {
   fetchMore: () => Promise<boolean>;
   setCurrentPollId: (id: string) => Promise<void>;
+  refreshPoll: (id: string) => Promise<void>;
   setFilters: (filters: PollFeedFilters) => void;
   reset: () => void;
   publishPoll: (
     title: string,
     pollOptions: string[],
     tags: string[]
+  ) => Promise<void>;
+  castVoteToPoll: (pollId: string, optionId: string) => Promise<void>;
+  postCommentOnPoll: (
+    pollId: string,
+    parentCommentId: string | undefined | null,
+    commentBody: string
   ) => Promise<void>;
 }
 
@@ -69,7 +76,7 @@ export const usePollStore = defineStore<
       if (this.currentPage == null) this.currentPage = 0;
       else this.currentPage += 1;
 
-      let url = `polls/feed?page=${this.currentPage}&pageSize=1`;
+      let url = `polls/feed?page=${this.currentPage}&pageSize=20`;
       if (this.filters.tags != null && this.filters.tags?.length > 0) {
         this.filters.tags.forEach((tag) => {
           url += '&tags=' + tag;
@@ -112,6 +119,24 @@ export const usePollStore = defineStore<
         }
       });
     },
+    async refreshPoll(id: string) {
+      const refreshedPoll =
+        (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`))
+          .data.items?.[0] ?? null;
+
+      if (!refreshedPoll) return;
+
+      if (this.currentPoll?.pollId === id) {
+        this.currentPoll = refreshedPoll;
+      }
+
+      if (this.polls != null) {
+        const index = this.polls.map((p) => p.pollId).indexOf(id);
+        if (index >= 0) {
+          this.polls![index] = refreshedPoll;
+        }
+      }
+    },
     setFilters(filters: PollFeedFilters) {
       this.filters = filters;
     },
@@ -120,12 +145,31 @@ export const usePollStore = defineStore<
     },
     publishPoll(title: string, pollOptions: string[], tags: string[]) {
       return usingLoaderAsync(async () => {
-        const res = (await axiosPollit.post('polls', {
-          title: title,
-          options: pollOptions,
-          tags: tags,
-        })).data;
-        this.router.push({name: 'Poll', params: {'pollId': res.pollId}})
+        const res = (
+          await axiosPollit.post('polls', {
+            title: title,
+            options: pollOptions,
+            tags: tags,
+          })
+        ).data;
+        this.router.push({ name: 'Poll', params: { pollId: res.pollId } });
+      });
+    },
+    async castVoteToPoll(pollId: string, optionId: string) {
+      await axiosPollit.post(`polls/${pollId}/options/${optionId}/votes`);
+      await this.refreshPoll(pollId);
+    },
+    postCommentOnPoll(
+      pollId: string,
+      parentCommentId: string | undefined | null,
+      commentBody: string
+    ) {
+      return usingLoaderAsync(async () => {
+        await axiosPollit.post(`polls/${pollId}/comments`, {
+          parentCommentId,
+          commentBody,
+        });
+        await this.setCurrentPollId(pollId);
       });
     },
   },

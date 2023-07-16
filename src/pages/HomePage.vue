@@ -62,7 +62,7 @@ const submitSearch = () =>
             class="cursor-pointer"
           />
           <q-btn
-            :disable="globalStore.isLoading"
+            :disable="globalStore.isLoadingGlobal"
             type="submit"
             round
             dense

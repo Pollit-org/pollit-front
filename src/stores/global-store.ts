@@ -9,9 +9,10 @@ export interface ILoader extends IDisposable {
 
 interface GlobalStoreActions {
   setApiError: (apiError: string) => Promise<void> | void;
-  newLoader: () => ILoader;
+  newLoader: (loaderName?: string) => ILoader;
   stopLoader: (loaderId: string) => Promise<void> | void;
   navigateBackOrDefault: (default_?: string) => void;
+  isLoading: (loaderName: string) => boolean;
 }
 
 interface GlobalStoreState {
@@ -20,7 +21,7 @@ interface GlobalStoreState {
 }
 
 interface GlobalStoreGetters extends _GettersTree<GlobalStoreState> {
-  isLoading: () => boolean;
+  isLoadingGlobal: () => boolean;
 }
 
 function generateRandomId(length: number) {
@@ -59,8 +60,8 @@ export const useGlobalStore = defineStore<
     setApiError(apiError: string) {
       this.apiError = apiError;
     },
-    newLoader() {
-      const loaderId = generateRandomId(16);
+    newLoader(loaderName?: string) {
+      const loaderId = (loaderName ?? '') + ':' + generateRandomId(16);
       const loader: ILoader = {
         id: loaderId,
         dispose: () => this.stopLoader(loaderId),
@@ -75,9 +76,15 @@ export const useGlobalStore = defineStore<
       if (window.history.length > 2) Router.go(-1);
       else Router.push({ name: default_ });
     },
+    isLoading(loaderName: string) {
+      return (
+        [...this.activeLoaders].filter((l) => l.startsWith(loaderName + ':'))
+          .length > 0
+      );
+    },
   },
   getters: {
-    isLoading() {
+    isLoadingGlobal() {
       return this.activeLoaders.size > 0;
     },
   },

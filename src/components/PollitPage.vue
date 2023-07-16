@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
 const globalStore = useGlobalStore();
 
 const showSpinner = computed(
-  () => props.showSpinnerOnLoad && globalStore.isLoading
+  () => props.showSpinnerOnLoad && globalStore.isLoadingGlobal
 );
 
 const goBack = () => {

@@ -29,7 +29,7 @@ const signinWithCredentials = () => {
       filled
       color="light"
       v-model="emailOrUserName"
-      :readonly="globalStore.isLoading"
+      :readonly="globalStore.isLoadingGlobal"
       :rules="[requiredField]"
       class="q-mb-xs"
       clearable
@@ -41,7 +41,7 @@ const signinWithCredentials = () => {
       filled
       color="light"
       v-model="password"
-      :readonly="globalStore.isLoading"
+      :readonly="globalStore.isLoadingGlobal"
       :rules="[requiredField]"
       class="q-mb-xs"
       clearable
