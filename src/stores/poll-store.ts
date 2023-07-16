@@ -1,5 +1,5 @@
 import { Store, _GettersTree, defineStore } from 'pinia';
-import { Poll } from 'src/api/models/poll';
+import { Poll, PollDetailedResults } from 'src/api/models/poll';
 import { Comment } from 'src/api/models/comment';
 import { axiosPollit } from 'src/axios';
 import { usingLoaderAsync } from 'src/misc/usingLoader';
@@ -11,7 +11,7 @@ export interface PollFeedFilters {
 
 interface PollStoreActions {
   fetchMore: () => Promise<boolean>;
-  setCurrentPollId: (id: string) => Promise<void>;
+  setCurrentPoll: (id: string) => Promise<void>;
   refreshPoll: (id: string) => Promise<void>;
   setFilters: (filters: PollFeedFilters) => void;
   reset: () => void;
@@ -33,6 +33,7 @@ interface PollStoreState {
   currentPage: number | null;
   hasNextPage: boolean;
   currentPoll: Poll | null;
+  currentPollDetailedResults: PollDetailedResults | null;
   currentPollComments: Comment[] | null;
   currentPollNotFound: boolean;
   filters: PollFeedFilters;
@@ -96,7 +97,7 @@ export const usePollStore = defineStore<
 
       return hasNextPage;
     },
-    setCurrentPollId(id: string) {
+    setCurrentPoll(id: string) {
       return usingLoaderAsync(async () => {
         this.currentPollNotFound = false;
         this.currentPollComments = [];
@@ -111,6 +112,12 @@ export const usePollStore = defineStore<
 
         try {
           this.currentPollComments = (await getCommentsAsync).data.items;
+        } catch (e) {}
+
+        const getDetailedPollResultsAsync = axiosPollit.get(`polls/${id}/results`);
+
+        try {
+          this.currentPollDetailedResults = (await getDetailedPollResultsAsync).data;
         } catch (e) {}
 
         if (this.currentPoll == null) {
@@ -169,7 +176,7 @@ export const usePollStore = defineStore<
           parentCommentId,
           commentBody,
         });
-        await this.setCurrentPollId(pollId);
+        await this.setCurrentPoll(pollId);
       });
     },
   },

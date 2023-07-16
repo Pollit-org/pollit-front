@@ -4,6 +4,7 @@ import PollOptions from './PollOptions.vue';
 import PollTitle from './PollTitle.vue';
 import PollHeader from './PollHeader.vue';
 import { provide, ref } from 'vue';
+import PollResults from './PollResults.vue'
 import { postInjectionKey } from './injection_keys';
 import { Poll } from 'src/api/models/poll';
 
@@ -26,7 +27,8 @@ const hovered = ref(false);
   >
     <poll-header />
     <poll-title />
-    <poll-options :poll="poll" />
+    <poll-options :poll="poll" v-if="!props.poll.hasMyVote"/>
+    <poll-results :poll="poll" v-if="props.poll.hasMyVote"/>
     <poll-bottom-bar style="z-index: -1" />
   </q-card>
 </template>
