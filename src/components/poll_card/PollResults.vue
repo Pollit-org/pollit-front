@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, toRef, toRefs } from 'vue';
-import {
-  Poll,
-  PollDetailedResults,
-  PollOption,
-  PollOptionResults,
-} from 'src/api/models/poll';
+import { Poll, PollDetailedResults } from 'src/api/models/poll';
 import { usePollStore } from 'src/stores/poll-store';
 import { QBtn } from 'quasar';
 import Chart from 'chart.js/auto';
@@ -18,30 +13,13 @@ interface Props {
 }
 const props = defineProps<Props>();
 
-function sortOptionsByAscendingTitle(
-  a: PollOption | PollOptionResults,
-  b: PollOption | PollOptionResults
-) {
-  if (a.title === "I don't know") return 1;
-  if (b.title === "I don't know") return -1;
-  return a.title.localeCompare(b.title);
-}
-
 const poll = computed(() => {
-  let x = props.poll;
-  if (x != null) {
-    x.options.sort(sortOptionsByAscendingTitle);
-  }
-  return x;
+  return props.poll;
 }).value;
 
 const pollStore = usePollStore();
 const detailedPollResults: PollDetailedResults = computed(() => {
-  let x = pollStore.currentPollDetailedResults!;
-  if (x != null) {
-    x.options.sort(sortOptionsByAscendingTitle);
-  }
-  return x;
+  return pollStore.currentPollDetailedResults!;
 }).value;
 
 // chart constants
