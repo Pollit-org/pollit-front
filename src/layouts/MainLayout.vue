@@ -2,13 +2,18 @@
   <q-layout view="hHh Lpr fff">
     <q-header bordered class="bg-banner text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="desktop-hide" />
+        <!-- <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" class="desktop-hide" /> -->
         <pollit-toolbar-title />
         <q-space />
-        <q-btn-dropdown v-if="connectedUserStore.user != null" color="primary"
-          :label="connectedUserStore.user.claims.UserName" icon="person" no-caps>
+        <q-btn-dropdown
+          v-if="connectedUserStore.user != null"
+          color="primary"
+          :label="connectedUserStore.user.claims.UserName"
+          icon="person"
+          no-caps
+        >
           <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
+            <!-- <q-item clickable v-close-popup @click="onItemClick">
               <span class="material-icons-outlined"></span>
               <q-item-section avatar>
                 <q-icon name="question_answer" />
@@ -16,7 +21,7 @@
               <q-item-section>
                 <q-item-label>Inbox</q-item-label>
               </q-item-section>
-            </q-item>
+            </q-item> -->
 
             <q-item clickable to="/account-settings" class="no-link-style">
               <q-item-section avatar>
@@ -31,20 +36,15 @@
               <q-item-section avatar>
                 <q-icon name="logout" />
               </q-item-section>
-              <q-item-section>
-                Signout
-              </q-item-section>
+              <q-item-section> Signout </q-item-section>
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <q-btn v-else rounded outline @click="signin">
-          Sign in
-        </q-btn>
-
+        <q-btn v-else rounded outline @click="signin"> Sign in </q-btn>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" show-if-above bordered>
+    <!-- <q-drawer v-model="leftDrawerOpen" side="left" show-if-above bordered>
       <q-scroll-area class="fit">
         <q-list>
 
@@ -62,20 +62,19 @@
 
         </q-list>
       </q-scroll-area>
-    </q-drawer>
-    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
-      <!-- drawer content -->
-    </q-drawer>
+    </q-drawer> -->
+    <!-- <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered> -->
+    <!-- drawer content -->
+    <!-- </q-drawer> -->
     <q-page-container>
       <router-view />
     </q-page-container>
-
   </q-layout>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useQuasar } from 'quasar'
+import { ref } from 'vue';
+import { useQuasar } from 'quasar';
 import { useConnectedUserStore } from 'src/stores/connected-user-store';
 import Router from 'src/router';
 import PollitToolbarTitle from './components/PollitToolbarTitle.vue';
@@ -83,53 +82,53 @@ import PollitToolbarTitle from './components/PollitToolbarTitle.vue';
 const connectedUserStore = useConnectedUserStore();
 
 const signin = () => {
-  Router.push({ name: 'Signin' })
-}
+  Router.push({ name: 'Signin' });
+};
 
 const menuList = [
   {
     icon: 'inbox',
     label: 'Menu 1',
-    separator: true
+    separator: true,
   },
   {
     icon: 'send',
     label: 'Menu 2',
-    separator: false
+    separator: false,
   },
   {
     icon: 'delete',
     label: 'Menu 3',
-    separator: false
+    separator: false,
   },
   {
     icon: 'error',
     label: 'Menu 4',
-    separator: true
+    separator: true,
   },
   {
     icon: 'settings',
     label: 'Menu 5',
-    separator: false
+    separator: false,
   },
   {
     icon: 'feedback',
     label: 'Menu 6',
-    separator: false
+    separator: false,
   },
   {
     icon: 'help',
     iconColor: 'primary',
     label: 'Menu 7',
-    separator: false
-  }
+    separator: false,
+  },
 ];
 
-const $q = useQuasar()
+const $q = useQuasar();
 
-const leftDrawerOpen = ref($q.screen.width < 1023 ? false : true)
+const leftDrawerOpen = ref($q.screen.width < 1023 ? false : true);
 
 const toggleLeftDrawer = () => {
-  leftDrawerOpen.value = !leftDrawerOpen.value
-}
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+};
 </script>

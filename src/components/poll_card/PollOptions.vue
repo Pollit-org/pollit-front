@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue';
-import { Poll, PollOption } from 'src/api/models/poll';
+import { onMounted, ref } from 'vue';
+import { Poll } from 'src/api/models/poll';
 import { usePollStore } from 'src/stores/poll-store';
 
 interface Props {
@@ -10,21 +10,21 @@ interface Props {
 const props = defineProps<Props>();
 
 const pollStore = usePollStore();
-
-const onClickOnOption = (evt: Event, optionId: string) => {
-  evt.stopImmediatePropagation();
-  if (!props.poll.hasMyVote) {
-    pollStore.castVoteToPoll(props.poll.pollId, optionId);
-  }
-};
+const voteOptions = ref<object[]>([]);
+for (const option of props.poll.options) {
+  voteOptions.value.push({ label: option.title, value: option.id });
+}
+const selectedOption = ref<string | null>(null);
 
 const allOptionsVoteCountsAreZero = ref(true);
 onMounted(() => {
   setTimeout(() => (allOptionsVoteCountsAreZero.value = false), 300);
 });
 
-const buildOptionKey: (option: PollOption) => string = (option) => {
-  return option.id + option.hasMyVote + option.votesCount;
+const onVoteButtonClick = () => {
+  if (selectedOption.value !== null) {
+    pollStore.castVoteToPoll(props.poll.pollId, selectedOption.value);
+  }
 };
 </script>
 
@@ -33,38 +33,19 @@ const buildOptionKey: (option: PollOption) => string = (option) => {
     :key="poll.pollId + poll.hasMyVote + poll.totalVotesCount"
     class="poll-options"
   >
-    <!-- <q-scroll-area style="height: 100px; max-height: 180px"> -->
-    <q-list bordered separator dense>
-      <template v-for="option in poll.options" :key="buildOptionKey(option)">
-        <q-item
-          :class="poll.hasMyVote ? 'cursor-not-allowed' : ''"
-          clickable
-          :active="option.hasMyVote"
-          @click="($event) => onClickOnOption($event, option.id)"
-        >
-          <q-item-section>
-            <q-item-label>{{ option.title }}</q-item-label>
-          </q-item-section>
-          <q-item-section v-if="poll.hasMyVote" side>
-            <q-item-label caption
-              >{{ option.votesCount }} ({{
-                ((option.votesCount ?? 0) / poll.totalVotesCount) * 100
-              }}%)</q-item-label
-            >
-          </q-item-section>
-        </q-item>
-        <q-linear-progress
-          v-if="poll.hasMyVote"
-          animation-speed="1000"
-          :color="option.hasMyVote ? 'primary' : 'secondary'"
-          :value="
-            allOptionsVoteCountsAreZero
-              ? 0
-              : (option.votesCount ?? 0) / poll.totalVotesCount
-          "
-        />
-      </template>
-    </q-list>
-    <!-- </q-scroll-area> -->
+    <q-option-group
+      class="q-pb-sm"
+      :options="voteOptions"
+      type="radio"
+      v-model="selectedOption"
+    />
+    <q-btn
+      rounded
+      size="sm"
+      @click="onVoteButtonClick"
+      :disabled="selectedOption === null"
+      label="Vote"
+      color="accent"
+    />
   </q-card-section>
 </template>

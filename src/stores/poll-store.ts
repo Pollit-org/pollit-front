@@ -1,3 +1,4 @@
+import { PollOption, PollOptionResults } from './../api/models/poll';
 import { Store, _GettersTree, defineStore } from 'pinia';
 import { Poll, PollDetailedResults } from 'src/api/models/poll';
 import { Comment } from 'src/api/models/comment';
@@ -15,11 +16,7 @@ interface PollStoreActions {
   refreshPoll: (id: string) => Promise<void>;
   setFilters: (filters: PollFeedFilters) => void;
   reset: () => void;
-  publishPoll: (
-    title: string,
-    pollOptions: string[],
-    tags: string[]
-  ) => Promise<void>;
+  publishPoll: (title: string, pollOptions: string[], tags: string[]) => Promise<void>;
   castVoteToPoll: (pollId: string, optionId: string) => Promise<void>;
   postCommentOnPoll: (
     pollId: string,
@@ -41,12 +38,7 @@ interface PollStoreState {
 
 type PollStoreGetters = _GettersTree<PollStoreState>;
 
-export type PollStore = Store<
-  string,
-  PollStoreState,
-  PollStoreGetters,
-  PollStoreActions
->;
+export type PollStore = Store<string, PollStoreState, PollStoreGetters, PollStoreActions>;
 
 const buildDefaultState = () => {
   return {
@@ -91,7 +83,9 @@ export const usePollStore = defineStore<
       }
 
       const { items, options, hasNextPage } = (await axiosPollit.get(url)).data;
-
+      for (const poll of items) {
+        poll.options.sort(sortOptionsAscending);
+      }
       this.polls.push(...items);
       this.currentPage = options.pageNumber;
       this.hasNextPage = hasNextPage;
@@ -105,9 +99,10 @@ export const usePollStore = defineStore<
 
         this.currentPoll =
           this.polls?.filter((p) => p.pollId == id)?.[0] ??
-          (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`))
-            .data.items?.[0] ??
+          (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`)).data
+            .items?.[0] ??
           null;
+        this.currentPoll?.options.sort(sortOptionsAscending);
 
         const getCommentsAsync = axiosPollit.get(
           `polls/${id}/comments?MaxRecursiveDepth=200`
@@ -121,6 +116,7 @@ export const usePollStore = defineStore<
 
         try {
           this.currentPollDetailedResults = (await getDetailedPollResultsAsync).data;
+          this.currentPollDetailedResults?.options.sort(sortOptionsAscending);
         } catch (e) {}
 
         if (this.currentPoll == null) {
@@ -131,10 +127,12 @@ export const usePollStore = defineStore<
     },
     async refreshPoll(id: string) {
       const refreshedPoll =
-        (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`))
-          .data.items?.[0] ?? null;
+        (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`)).data
+          .items?.[0] ?? null;
 
       if (!refreshedPoll) return;
+
+      refreshedPoll.options.sort(sortOptionsAscending);
 
       if (this.currentPoll?.pollId === id) {
         this.currentPoll = refreshedPoll;
@@ -185,3 +183,14 @@ export const usePollStore = defineStore<
   },
   getters: {},
 });
+
+// utils
+
+function sortOptionsAscending(
+  a: PollOption | PollOptionResults,
+  b: PollOption | PollOptionResults
+) {
+  if (a.title === "I don't know") return 1;
+  if (b.title === "I don't know") return -1;
+  return a.title.localeCompare(b.title);
+}
