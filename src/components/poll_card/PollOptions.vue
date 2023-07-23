@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { Poll } from 'src/api/models/poll';
 import { usePollStore } from 'src/stores/poll-store';
+import { showSigninPopupIfNotConnected } from 'src/misc/ShowSigninPopupIfNotConnected';
 
 interface Props {
   poll: Poll;
@@ -42,7 +43,7 @@ const onVoteButtonClick = () => {
     <q-btn
       rounded
       size="sm"
-      @click="onVoteButtonClick"
+      @click.stop="showSigninPopupIfNotConnected(onVoteButtonClick)"
       :disabled="selectedOption === null"
       label="Vote"
       color="accent"

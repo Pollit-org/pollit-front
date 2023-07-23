@@ -1,5 +1,9 @@
 <template>
-  <q-form @submit="submitForm" ref="pollForm" @click="showPollFormContent = true">
+  <q-form
+    @submit="submitForm"
+    ref="pollForm"
+    @click="showSigninPopupIfNotConnected(() => {showPollFormContent = true})"
+  >
     <q-card bordered>
       <q-input
         dense
@@ -7,7 +11,10 @@
         class="q-pt-md q-pl-md"
         v-model="question"
         label="Just poll it..."
-        :rules="[(val) => /\S/.test(val) || 'Question is required', (val) => val.length < 125 || '125 characters max']"
+        :rules="[
+          (val) => /\S/.test(val) || 'Question is required',
+          (val) => val.length < 125 || '125 characters max',
+        ]"
       />
       <q-card-section class="q-pb-xs" v-if="showPollFormContent">
         <q-list bordered dense>
@@ -18,7 +25,12 @@
                 class="q-pb-sm"
                 v-model="pollOptions[index]"
                 :placeholder="'option ' + (index + 1)"
-                :rules="[(val) => /\S/.test(val) || 'Option can\'t be blank', () => pollOptions.length == (new Set(pollOptions)).size || 'Options must all be different']"
+                :rules="[
+                  (val) => /\S/.test(val) || 'Option can\'t be blank',
+                  () =>
+                    pollOptions.length == new Set(pollOptions).size ||
+                    'Options must all be different',
+                ]"
                 :disable="index === pollOptions.length - 1"
                 dense
               />
@@ -79,6 +91,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { usePollStore } from 'stores/poll-store';
+import { showSigninPopupIfNotConnected } from '../misc/ShowSigninPopupIfNotConnected';
 
 const pollStore = usePollStore();
 
@@ -104,15 +117,14 @@ const removeOption = (index: number) => {
 };
 
 const submitForm = () => {
-  pollOptions
-  pollStore.publishPoll(question.value, pollOptions.value, selectedTags.value);
+  pollStore.publishPoll(question.value, pollOptions.value, selectedTags.value)
 };
 
 // TAGS
 
 const selectedTags = ref([]);
 
-const existingTags = ['TO DO', 'ADD TAGS API', 'RETRIEVE ALL BY DESCENDED ORDER (# usages in posts)'];
+const existingTags = [];
 
 const filteredTags = ref(existingTags);
 

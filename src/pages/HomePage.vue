@@ -45,7 +45,7 @@ const submitSearch = () =>
 
 <template>
   <pollit-page :has-back-button="false">
-    <q-form @submit="submitSearch">
+    <!-- <q-form @submit="submitSearch">
       <q-input
         v-model="searchText"
         label="Search"
@@ -82,7 +82,7 @@ const submitSearch = () =>
       >
         #{{ tag }}
       </q-chip>
-    </div>
+    </div> -->
     <poll-feed :search="props.search" :tags="props.tags"></poll-feed>
   </pollit-page>
 </template>

@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Comment } from 'src/api/models/comment';
 import { usePollStore } from 'src/stores/poll-store';
 import { ref } from 'vue';
+import {showSigninPopupIfNotConnected} from 'src/misc/ShowSigninPopupIfNotConnected'
 
 interface Props {
   pollId: string;
@@ -58,7 +59,7 @@ const props = defineProps<Props>();
       <q-card-section class="q-pa-none q-ml-md">
         <q-btn
           v-if="currentReply == null"
-          @click="startReply()"
+          @click="showSigninPopupIfNotConnected(startReply)"
           no-caps
           color="primary"
           outline
