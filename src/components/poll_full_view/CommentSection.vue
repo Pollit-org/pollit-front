@@ -3,6 +3,7 @@ import RecursiveComment from './RecursiveComment.vue';
 import { Comment } from 'src/api/models/comment';
 import { ref } from 'vue';
 import { usePollStore } from 'src/stores/poll-store';
+import {showSigninPopupIfNotConnected} from 'src/misc/ShowSigninPopupIfNotConnected'
 
 interface Props {
   pollId: string;
@@ -23,7 +24,7 @@ const postComment = () => {
 <template>
   <q-card>
     <q-card-section>
-      <q-form @submit="postComment">
+      <q-form @submit="postComment" @click="showSigninPopupIfNotConnected(()=>{})">
         <q-input
           label="What's on your mind ?"
           v-model.trim="currentComment"

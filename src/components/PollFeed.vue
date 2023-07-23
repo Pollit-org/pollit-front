@@ -52,8 +52,8 @@ const onLoadRef = (index: number, done: (stop?: boolean) => void) => {
 
 <template>
   <div>
+    <poll-form class="q-pt-sm" />
     <q-infinite-scroll ref="infiniteScroll" @load="onLoadRef" :offset="250">
-      <poll-form class="q-pt-sm"></poll-form>
       <poll-card
         v-for="poll in pollStore.$state.polls"
         :key="poll.pollId + poll.hasMyVote + poll.totalVotesCount"

@@ -4,6 +4,7 @@ import jwtDecode from 'jwt-decode';
 import { usingLoader, usingLoaderAsync } from 'src/misc/usingLoader';
 import { PromiseOrNot } from 'src/misc/promiseOrNot';
 import moment from 'moment';
+import { closeSigninPopup } from 'src/misc/ShowSigninPopupIfNotConnected';
 
 interface ConnectedUserActions {
   signinWithCredentials: (
@@ -87,6 +88,21 @@ function buildUser(accessToken: string, refreshToken: string): User {
   };
 }
 
+async function handleSuccessfulSignIn(
+  this: any,
+  accessToken: string,
+  refreshToken: string
+) {
+  this.user = buildUser(accessToken, refreshToken);
+  closeSigninPopup()
+  if (this.user.claims.HasTemporaryUserName == 'True') {
+    this.router.push({ name: 'SetPermanentUserName' });
+  } else {
+    this.router.go(0);
+  }
+}
+
+
 export type ConnectedUserStore = Store<
   string,
   ConnectedUserState,
@@ -125,11 +141,7 @@ export const useConnectedUserStore = defineStore<
         const { accessToken, refreshToken } = (
           await axiosPollit.post('auth/signin', { emailOrUserName, password })
         ).data;
-        this.user = buildUser(accessToken, refreshToken);
-
-        if (this.user.claims.HasTemporaryUserName == 'True')
-          this.router.push({ name: 'SetPermanentUserName' });
-        else this.router.push({ name: 'Home' });
+        await handleSuccessfulSignIn.call(this, accessToken, refreshToken);
       });
     },
     signupWithCredentials(email: string, userName: string, password: string) {
@@ -170,11 +182,7 @@ export const useConnectedUserStore = defineStore<
         const { accessToken, refreshToken } = (
           await axiosPollit.post('auth/signin/google/authCode', { code })
         ).data;
-        this.user = buildUser(accessToken, refreshToken);
-
-        if (this.user.claims.HasTemporaryUserName == 'True')
-          this.router.push({ name: 'SetPermanentUserName' });
-        else this.router.push({ name: 'Home' });
+        await handleSuccessfulSignIn.call(this, accessToken, refreshToken);
       });
     },
     signinWithGoogleAccessToken(googleAccessToken: string) {
@@ -184,11 +192,7 @@ export const useConnectedUserStore = defineStore<
             accessToken: googleAccessToken,
           })
         ).data;
-        this.user = buildUser(accessToken, refreshToken);
-
-        if (this.user.claims.HasTemporaryUserName == 'True')
-          this.router.push({ name: 'SetPermanentUserName' });
-        else this.router.push({ name: 'Home' });
+        await handleSuccessfulSignIn.call(this, accessToken, refreshToken);
       });
     },
     signinWithRefreshToken(preventRouteChange = false) {
@@ -268,8 +272,7 @@ export const useConnectedUserStore = defineStore<
       return usingLoader(() => {
         this.user = null;
         if (preventRouteChange) return;
-
-        this.router.push({ name: 'Home' });
+        this.router.go(0);
       });
     },
     requestResetPassword(email?: string) {

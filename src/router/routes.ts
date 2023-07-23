@@ -52,6 +52,9 @@ const routes: RouteRecordRaw[] = [
         path: 'prompt-info',
         name: 'PromptPersonalInfo',
         component: () => import('pages/PromptPersonalInfo.vue'),
+        meta: {
+          userRequirements: [userSignedIn],
+        },
       },
     ],
   },

@@ -32,7 +32,7 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="connectedUserStore.signout">
+            <q-item clickable v-close-popup @click="connectedUserStore.signout(false)">
               <q-item-section avatar>
                 <q-icon name="logout" />
               </q-item-section>
@@ -40,7 +40,7 @@
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <q-btn v-else rounded outline @click="signin"> Sign in </q-btn>
+        <q-btn v-else rounded @click="signin" color="accent"> Sign in </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -68,6 +68,13 @@
     <!-- </q-drawer> -->
     <q-page-container>
       <router-view />
+      <q-dialog
+        v-if="showSigninPopup"
+        v-model="showSigninPopup"
+        @close="closeSigninPopup"
+      >
+        <sign-in style="width: 700px; max-width: 80vw" />
+      </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
@@ -78,6 +85,8 @@ import { useQuasar } from 'quasar';
 import { useConnectedUserStore } from 'src/stores/connected-user-store';
 import Router from 'src/router';
 import PollitToolbarTitle from './components/PollitToolbarTitle.vue';
+import SignIn from 'src/components/SignIn.vue';
+import { showSigninPopup, closeSigninPopup } from '../misc/ShowSigninPopupIfNotConnected';
 
 const connectedUserStore = useConnectedUserStore();
 

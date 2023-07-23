@@ -29,7 +29,6 @@ const showWhyAreWeAsking = ref(false);
 
 <template>
   <pollit-page
-    show-spinner-on-load
     vertical-center
     :has-back-button="false"
     text-center
@@ -55,7 +54,7 @@ const showWhyAreWeAsking = ref(false);
     <q-btn
       rounded
       outline
-      :color="gender == 'Male' ? 'primary' : 'secondary'"
+      :color="gender == 'Male' ? 'primary' : 'grey'"
       class="q-mx-xs q-my-xs"
       @click="(e) => selectGender('Male')"
       >Male</q-btn
@@ -63,7 +62,7 @@ const showWhyAreWeAsking = ref(false);
     <q-btn
       rounded
       outline
-      :color="gender == 'Female' ? 'primary' : 'secondary'"
+      :color="gender == 'Female' ? 'primary' : 'grey'"
       class="q-mx-xs q-my-xs"
       @click="(e) => selectGender('Female')"
       >Female</q-btn
@@ -71,7 +70,7 @@ const showWhyAreWeAsking = ref(false);
     <q-btn
       rounded
       outline
-      :color="gender == 'Other' ? 'primary' : 'secondary'"
+      :color="gender == 'Other' ? 'primary' : 'grey'"
       class="q-mx-xs q-my-xs"
       @click="(e) => selectGender('Other')"
       >Other</q-btn
@@ -80,7 +79,7 @@ const showWhyAreWeAsking = ref(false);
     <q-btn
       rounded
       outline
-      color="secondary"
+      color="grey"
       class="q-mx-xs q-my-xs"
       @click="showSkipDisclaimer = true"
       >Skip</q-btn
@@ -119,7 +118,8 @@ const showWhyAreWeAsking = ref(false);
     <br />
     <br />
     <span
-      class="label text-secondary cursor-pointer"
+      class="label cursor-pointer"
+      style="text-decoration: underline"
       @click="showWhyAreWeAsking = true"
       >Why are we asking ?</span
     >
