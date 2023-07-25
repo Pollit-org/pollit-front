@@ -77,14 +77,17 @@ const chartFeatureViews = ref<any>({
   all: {
     feature: 'All',
     color: 'grey',
+    disabledDatasets: []
   },
   age: {
     feature: 'By Age',
     color: 'yellow-8',
+    disabledDatasets: ['1 - 15', '55 - 70', '70 - 85', '85 - 120']
   },
   gender: {
     feature: 'By Gender',
     color: 'deep-purple-12',
+    disabledDatasets: ['Other']
   },
 });
 
@@ -100,6 +103,7 @@ const getFeatureDatasets = (featureName: string) => {
               data: [],
               minBarLength: 20,
               datalabels: { display: false },
+              hidden: chartFeatureViews.value[featureName].disabledDatasets.includes(interval.label),
             };
           }
           datasets[interval.label].data.push(interval.votesCount);
