@@ -38,17 +38,15 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  label: 'Sign in with Google',
+  label: 'Google',
 });
 </script>
 
 <template>
   <q-btn :disable="!isReady" rounded outline @click="() => login()">
-    <q-icon
-      name="svguse:icons/google.svg#classic"
-      size="18px"
-      class="q-mr-xs"
-    ></q-icon>
+    <svg width="18px" height="18px" class="q-mr-xs">
+      <use xlink:href="/icons/google.svg#classic"></use>
+    </svg>
     {{ props.label }}
   </q-btn>
 </template>

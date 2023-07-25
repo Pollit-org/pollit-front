@@ -28,7 +28,7 @@ const poll = inject(postInjectionKey) as Poll;
     <q-btn flat class="row items-center">
       <q-icon name="o_forum" size="1rem" class="q-mr-xs" />
       <span class="poll-comments" style="font-size: 0.7rem"
-        >{{ poll.commentCount }} Comments</span
+        >{{ poll.commentCount }}</span
       >
     </q-btn>
     <q-btn round flat class="poll-share" icon="share" size="sm" />
