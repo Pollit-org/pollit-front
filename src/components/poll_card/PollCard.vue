@@ -3,7 +3,7 @@ import PollBottomBar from './PollBottomBar.vue';
 import PollOptions from './PollOptions.vue';
 import PollTitle from './PollTitle.vue';
 import PollHeader from './PollHeader.vue';
-import { provide, ref } from 'vue';
+import { provide } from 'vue';
 import PollResults from './PollResults.vue'
 import { postInjectionKey } from './injection_keys';
 import { Poll } from 'src/api/models/poll';

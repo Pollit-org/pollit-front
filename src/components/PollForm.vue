@@ -13,7 +13,7 @@
         label="Just poll it..."
         :rules="[
           (val) => /\S/.test(val) || 'Question is required',
-          (val) => val.length < 125 || '125 characters max',
+          (val) => val.length <= 125 || '125 characters max',
         ]"
       />
       <q-card-section class="q-pb-xs" v-if="showPollFormContent">
@@ -30,6 +30,7 @@
                   () =>
                     pollOptions.length == new Set(pollOptions).size ||
                     'Options must all be different',
+                  (val) => val.length <= 20 || '20 characters max',
                 ]"
                 :disable="index === pollOptions.length - 1"
                 dense

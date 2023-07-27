@@ -25,26 +25,20 @@ const detailedPollResults: PollDetailedResults = computed(() => {
 // chart constants
 
 const optionsCount = poll.options.length;
-const barPixels = 15;
+const barPixels = 20;
 const pollChartId = poll.pollId + '-chart';
 const labelWithMyVote =
   '\u2713 ' + poll.options.find((option) => option.hasMyVote)?.title;
 
 const defaultChartData = reactive({
   labels: poll.options.map((option) =>
-    option.hasMyVote ? labelWithMyVote : option.title
+  option.hasMyVote ? labelWithMyVote : option.title
   ),
   datasets: [
     {
       label: 'all voters',
       data: poll.options.map((option) => option.votesCount),
       minBarLength: 20,
-      datalabels: {
-        display: true,
-        align: 'left',
-        anchor: 'end',
-        clamp: 'true',
-      },
     },
   ],
 });
@@ -63,7 +57,9 @@ const defaultChartOptions = {
     y: {
       ticks: {
         font: defaultChartData.labels.map((l) => ({
-          weight: l == labelWithMyVote ? 'bold' : 'normal',
+          weight: l == labelWithMyVote ? '700' : '500',
+          family: 'Trebuchet MS, Sans Serif',
+          size: 13
         })),
         color: defaultChartData.labels.map((l) =>
           l == labelWithMyVote ? '#156e28' : '#000'
@@ -71,6 +67,18 @@ const defaultChartOptions = {
       },
     },
   },
+  plugins:{
+    datalabels: {
+        display: true,
+        align: 'left',
+        anchor: 'end',
+        clamp: 'true',
+        font: {
+          weight: 'bold',
+          size: 10,
+        }
+      },
+  }
 };
 
 const chartFeatureViews = ref<any>({
@@ -102,7 +110,6 @@ const getFeatureDatasets = (featureName: string) => {
               label: interval.label,
               data: [],
               minBarLength: 20,
-              datalabels: { display: false },
               hidden: chartFeatureViews.value[featureName].disabledDatasets.includes(interval.label),
             };
           }
@@ -127,14 +134,13 @@ onMounted(() => {
     data: { ...defaultChartData },
     options: { ...defaultChartOptions },
   });
-
   const defaultChartHeight = getChartHeight(1);
 
   const setFeatureChart = (featureName: string) => {
-    const ageDatasets = getFeatureDatasets(featureName);
-    const ageChartHeight = getChartHeight(ageDatasets.length);
-    chart.data.datasets = ageDatasets;
-    chart.canvas.parentNode.style.height = ageChartHeight;
+    const datasets = getFeatureDatasets(featureName);
+    const chartHeight = getChartHeight(datasets.length);
+    chart.data.datasets = datasets;
+    chart.canvas.parentNode.style.height = chartHeight;
     chart.update();
   };
 
@@ -156,12 +162,6 @@ onMounted(() => {
   <q-card-section class="text-h6 q-pt-none q-pb-none">
     <div class="chart-container" style="position: relative; min-height: 200px">
       <canvas :id="pollChartId"></canvas>
-      <q-btn size="xs" round flat style="position: absolute; top: 0; left: 0">
-        <q-icon name="help" />
-        <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
-          <strong>Click on categories to add/remove them.</strong>
-        </q-tooltip>
-      </q-btn>
     </div>
 
     <q-btn
