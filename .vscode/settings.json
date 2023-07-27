@@ -17,5 +17,8 @@
   "[vue]": {
     "editor.defaultFormatter": "octref.vetur"
   },
-  "vue3snippets.enable-compile-vue-file-on-did-save-code": false
+  "vue3snippets.enable-compile-vue-file-on-did-save-code": false,
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  }
 }
