@@ -5,6 +5,7 @@ import { usePollStore } from 'src/stores/poll-store';
 import { QBtn } from 'quasar';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { useConnectedUserStore } from 'src/stores/connected-user-store';
 Chart.register(ChartDataLabels);
 
 // poll data
@@ -12,6 +13,8 @@ interface Props {
   poll: Poll;
 }
 const props = defineProps<Props>();
+
+const connectedUserStore = useConnectedUserStore();
 
 const poll = computed(() => {
   return props.poll;
@@ -32,7 +35,7 @@ const labelWithMyVote =
 
 const defaultChartData = reactive({
   labels: poll.options.map((option) =>
-  option.hasMyVote ? labelWithMyVote : option.title
+    option.hasMyVote ? labelWithMyVote : option.title
   ),
   datasets: [
     {
@@ -59,7 +62,7 @@ const defaultChartOptions = {
         font: defaultChartData.labels.map((l) => ({
           weight: l == labelWithMyVote ? '700' : '500',
           family: 'Trebuchet MS, Sans Serif',
-          size: 13
+          size: 12,
         })),
         color: defaultChartData.labels.map((l) =>
           l == labelWithMyVote ? '#156e28' : '#000'
@@ -67,40 +70,39 @@ const defaultChartOptions = {
       },
     },
   },
-  plugins:{
+  plugins: {
     datalabels: {
-        display: true,
-        align: 'left',
-        anchor: 'end',
-        clamp: 'true',
-        font: {
-          weight: 'bold',
-          size: 10,
-        }
+      display: true,
+      align: 'left',
+      anchor: 'end',
+      clamp: 'true',
+      font: {
+        weight: 'bold',
+        size: 10,
       },
-  }
+    },
+  },
 };
 
-const chartFeatureViews = ref<any>({
-  all: {
-    feature: 'All',
-    color: 'grey',
-    disabledDatasets: []
-  },
-  age: {
-    feature: 'By Age',
-    color: 'yellow-8',
-    disabledDatasets: ['1 - 15', '55 - 70', '70 - 85', '85 - 120']
-  },
-  gender: {
-    feature: 'By Gender',
-    color: 'deep-purple-12',
-    disabledDatasets: ['Other']
-  },
-});
+interface Dataset {
+  label: string;
+  data: number[];
+  minBarLength?: number;
+  hidden?: boolean;
+}
 
-const getFeatureDatasets = (featureName: string) => {
-  let datasets = {};
+interface ChartFeature {
+  displayName: string;
+  color: string;
+  show: boolean;
+  datasets: Dataset[];
+}
+
+const getFeatureDatasets = (featureName: string, disabledDatasets: string[] = []) => {
+  let datasets: { [key: string]: Dataset } = {};
+  if (detailedPollResults === null) {
+    return Object.values(datasets);
+  }
   detailedPollResults.options.forEach((option) => {
     option.votesPerFeature.forEach((feature) => {
       if (feature.name === featureName) {
@@ -110,7 +112,7 @@ const getFeatureDatasets = (featureName: string) => {
               label: interval.label,
               data: [],
               minBarLength: 20,
-              hidden: chartFeatureViews.value[featureName].disabledDatasets.includes(interval.label),
+              hidden: disabledDatasets.includes(interval.label),
             };
           }
           datasets[interval.label].data.push(interval.votesCount);
@@ -122,11 +124,35 @@ const getFeatureDatasets = (featureName: string) => {
   return Object.values(datasets);
 };
 
+const chartFeatures = ref<ChartFeature[]>([
+  {
+    displayName: 'All',
+    color: 'grey-8',
+    disabledDatasets: [],
+    show: true,
+    datasets: defaultChartData.datasets,
+  },
+  {
+    displayName: 'By Age',
+    color: 'amber-8',
+    show: connectedUserStore.user?.privateProfile?.birthdate !== null ? true : false,
+    datasets: getFeatureDatasets('age', ['1 - 15', '55 - 70', '70 - 85', '85 - 120']),
+  },
+  {
+    displayName: 'By Gender',
+    color: 'deep-purple-8',
+    show: connectedUserStore.user?.privateProfile?.gender !== null ? true : false,
+    datasets: getFeatureDatasets('gender', ['Other']),
+  },
+]);
+
 const getChartHeight = (featureNumValues: number) => {
   return optionsCount * featureNumValues * barPixels + 'px';
 };
 
 // create chart after canvas is mounted
+
+let setFeatureChart = ref();
 
 onMounted(() => {
   const chart = new Chart(document.getElementById(pollChartId), {
@@ -134,26 +160,12 @@ onMounted(() => {
     data: { ...defaultChartData },
     options: { ...defaultChartOptions },
   });
-  const defaultChartHeight = getChartHeight(1);
 
-  const setFeatureChart = (featureName: string) => {
-    const datasets = getFeatureDatasets(featureName);
+  setFeatureChart.value = (datasets: Dataset[]) => {
     const chartHeight = getChartHeight(datasets.length);
     chart.data.datasets = datasets;
     chart.canvas.parentNode.style.height = chartHeight;
     chart.update();
-  };
-
-  chartFeatureViews.value.all.chartUpdate = () => {
-    chart.data.datasets = defaultChartData.datasets;
-    chart.canvas.parentNode.style.height = defaultChartHeight;
-    chart.update();
-  };
-  chartFeatureViews.value.age.chartUpdate = () => {
-    setFeatureChart('age');
-  };
-  chartFeatureViews.value.gender.chartUpdate = () => {
-    setFeatureChart('gender');
   };
 });
 </script>
@@ -163,18 +175,18 @@ onMounted(() => {
     <div class="chart-container" style="position: relative; min-height: 200px">
       <canvas :id="pollChartId"></canvas>
     </div>
-
-    <q-btn
-      v-for="chartView of Object.values(chartFeatureViews)"
-      :key="chartView.feature"
-      dense
-      size="sm"
-      :text-color="chartView.color"
-      outline
-      :label="chartView.feature"
-      class="q-mr-sm"
-      padding="none xs"
-      @click="chartView.chartUpdate"
-    />
+    <span v-for="chartFeature of Object.values(chartFeatures)" :key="chartFeature.displayName">
+      <q-btn
+        dense
+        size="0.7rem"
+        :label="chartFeature.displayName"
+        :text-color="chartFeature.color"
+        outline
+        class="q-mr-sm"
+        padding="none xs"
+        @click="setFeatureChart(chartFeature.datasets)"
+        v-if="chartFeature.show"
+      />
+    </span>
   </q-card-section>
 </template>

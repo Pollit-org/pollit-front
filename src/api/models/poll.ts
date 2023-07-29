@@ -31,7 +31,7 @@ export interface PollOptionResults {
 
 export interface FeatureVotes {
   name: string;
-  intervals: FeatureInterval;
+  intervals: FeatureInterval[];
 }
 
 export interface FeatureInterval {
