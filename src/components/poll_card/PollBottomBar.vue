@@ -5,16 +5,6 @@ import { postInjectionKey } from './injection_keys';
 
 const poll = inject(postInjectionKey) as Poll;
 
-// const sumComments = function (comments: Comment[]): number {
-//   const reducer = (sum: number, comment: Comment): number =>
-//     sum +
-//     (Array.isArray(comment.replies) && comment.replies.length > 0
-//       ? 1 + sumComments(comment.replies)
-//       : 1);
-//   return comments.reduce(reducer, 0);
-// };
-
-//const totalComments = sumComments(poll.comments);
 </script>
 
 <template>

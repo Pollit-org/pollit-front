@@ -36,13 +36,13 @@ const props = defineProps<Props>();
     dense-toggle
     default-opened
     header-style="align-items: center;"
-    class="q-pb-sm d-flex"
+    class="q-pb-md d-flex"
   >
     <template v-slot:header>
       <q-icon
         name="account_circle"
         class="q-pr-sm"
-        size="xs"
+        size="sm"
         color="primary"
       ></q-icon>
       <div class="text-weight-small q-pa-none q-ma-none">
@@ -56,19 +56,16 @@ const props = defineProps<Props>();
       <q-card-section class="q-pa-none q-pl-md q-pr-md">
         {{ props.comment.body }}
       </q-card-section>
-      <q-card-section class="q-pa-none q-ml-md">
+      <q-card-section class="q-px-none q-pb-none q-pt-sm q-ml-md">
         <q-btn
           v-if="currentReply == null"
           @click="showSigninPopupIfNotConnected(startReply)"
-          no-caps
-          color="primary"
+          color="grey-6"
           outline
-          dense
-          size="xs"
-          icon-right="reply"
-        >
-          Reply
-        </q-btn>
+          size="0.5rem"
+          icon="sym_o_reply"
+          class="q-py-none"
+        ></q-btn>
         <q-form @submit="postReply" v-else>
           <q-input
             dense
@@ -111,7 +108,7 @@ const props = defineProps<Props>();
       </q-card-section>
     </q-card>
   </q-expansion-item>
-  <q-separator v-if="isRoot" class="q-my-sm"></q-separator>
+  <!-- <q-separator v-if="isRoot" class="q-my-sm"></q-separator> -->
 </template>
 
 <style>
