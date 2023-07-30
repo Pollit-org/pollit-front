@@ -11,20 +11,21 @@ import { Poll } from 'src/api/models/poll';
 interface Props {
   poll: Poll;
 }
-const props = defineProps<Props>();
-provide(postInjectionKey, props.poll);
+// eslint-disable-next-line vue/no-setup-props-destructure
+const {poll} = defineProps<Props>();
+provide(postInjectionKey, poll);
 
 </script>
 
 <template >
   <q-card
-    :key="props.poll.pollId + props.poll.hasMyVote + props.poll.totalVotesCount"
+    :key="poll.pollId + poll.hasMyVote + poll.totalVotesCount"
     class="q-mt-md q-mt-md bg-white"
   >
     <poll-header class="q-pb-none"/>
     <poll-title />
-    <poll-options :poll="poll" v-if="!props.poll.hasMyVote"/>
-    <poll-results :poll="poll" v-if="props.poll.hasMyVote"/>
+    <poll-options :poll="poll" v-if="!poll.hasMyVote"/>
+    <poll-results :poll="poll" v-if="poll.hasMyVote"/>
     <poll-bottom-bar style="z-index: -1" />
   </q-card>
 </template>

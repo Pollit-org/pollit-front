@@ -1,78 +1,20 @@
+<!-- eslint-disable vue/no-setup-props-destructure -->
 <script setup lang="ts">
 import PollFeed from 'src/components/PollFeed.vue';
-import Router from 'src/router';
 import PollitPage from 'src/components/PollitPage.vue';
-import { ref } from 'vue';
-import { useGlobalStore } from 'src/stores/global-store';
+import { removeTag } from 'src/misc/filterTags';
 
 interface Props {
   search?: string;
   tags?: string;
 }
 
-const globalStore = useGlobalStore();
-
 const props = withDefaults(defineProps<Props>(), {});
 
-const searchText = ref(props.search ?? '');
-const tags = ref(props.tags ?? '');
-
-const removeTag = (tag: string) => {
-  tags.value =
-    tags.value
-      ?.split(' ')
-      .filter((t) => t != tag)
-      .join(' ') ?? '';
-
-  submitSearch();
-};
-
-const clearSearch = () => {
-  searchText.value = '';
-
-  submitSearch();
-};
-
-const submitSearch = () =>
-  Router.push({
-    name: 'Home',
-    query: {
-      q: searchText.value.length > 0 ? searchText.value : undefined,
-      tags: tags.value?.length > 0 ? tags.value : undefined,
-    },
-  });
 </script>
 
 <template>
   <pollit-page :has-back-button="false">
-    <!-- <q-form @submit="submitSearch">
-      <q-input
-        v-model="searchText"
-        label="Search"
-        rounded
-        outlined
-        dense
-        class="q-mt-md"
-      >
-        <template v-slot:append>
-          <q-icon
-            v-if="searchText !== ''"
-            name="close"
-            @click="clearSearch"
-            class="cursor-pointer"
-          />
-          <q-btn
-            :disable="globalStore.isLoadingGlobal"
-            type="submit"
-            round
-            dense
-            flat
-            icon="send"
-            @click="submitSearch"
-          />
-        </template>
-      </q-input>
-    </q-form>
     <div v-if="props.tags" class="q-mt-md wrap">
       <q-chip
         v-for="tag in props.tags?.split(' ')"
@@ -82,7 +24,7 @@ const submitSearch = () =>
       >
         #{{ tag }}
       </q-chip>
-    </div> -->
+    </div>
     <poll-feed :search="props.search" :tags="props.tags"></poll-feed>
   </pollit-page>
 </template>
