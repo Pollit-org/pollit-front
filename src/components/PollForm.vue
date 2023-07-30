@@ -73,7 +73,11 @@
           hide-dropdown-icon
           optionsDense
           max-values="3"
-          :rules="[() => selectedTags.length > 0 || 'At least one tag is required.']"
+          :rules="[
+          () => selectedTags.length > 0 || 'At least one tag is required',
+          () => selectedTags.every((tag: string) => /^\S+$/.test(tag)) || 'No space in tag names',
+          () => selectedTags.every((tag: string) => tag.length <= 20) || '20 characters max for tag names'
+          ]"
         />
       </q-card-section>
       <q-card-actions class="q-pt-none">
@@ -125,7 +129,7 @@ const submitForm = () => {
 
 const selectedTags = ref([]);
 
-const existingTags = [];
+const existingTags: string[] = [];
 
 const filteredTags = ref(existingTags);
 

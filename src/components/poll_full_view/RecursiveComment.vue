@@ -14,8 +14,9 @@ interface Props {
 const pollStore = usePollStore();
 
 const currentReply = ref<string | null>(null);
+const showReplyInput = ref<boolean>(false)
 
-const startReply = () => (currentReply.value = '');
+const toggleReplyInput = () => (showReplyInput.value = !showReplyInput.value);
 
 const postReply = () => {
   if (currentReply.value == null) return;
@@ -58,15 +59,14 @@ const props = defineProps<Props>();
       </q-card-section>
       <q-card-section class="q-px-none q-pb-none q-pt-sm q-ml-md">
         <q-btn
-          v-if="currentReply == null"
-          @click="showSigninPopupIfNotConnected(startReply)"
+          @click="showSigninPopupIfNotConnected(toggleReplyInput)"
           color="grey-6"
           outline
           size="0.5rem"
           icon="sym_o_reply"
           class="q-py-none"
         ></q-btn>
-        <q-form @submit="postReply" v-else>
+        <q-form @submit="postReply" v-if="showReplyInput">
           <q-input
             dense
             v-model.trim="currentReply"

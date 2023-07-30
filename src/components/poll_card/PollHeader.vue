@@ -1,9 +1,9 @@
 <script setup lang="ts">
-//import { Post } from 'src/models/interfaces';
 import { Poll } from 'src/api/models/poll';
 import { inject } from 'vue';
 import { postInjectionKey } from './injection_keys';
 import moment from 'moment';
+import {addTag} from 'src/misc/filterTags'
 
 const poll = inject(postInjectionKey) as Poll;
 </script>
@@ -14,7 +14,9 @@ const poll = inject(postInjectionKey) as Poll;
       <div>
         <div class="text-weight-small">
           {{ poll.author }}
-          <span class="text-weight-light text-italic text-caption">{{ moment(poll.createdAt).fromNow() }}</span>
+          <span class="text-weight-light text-italic text-caption">{{
+            moment(poll.createdAt).fromNow()
+          }}</span>
         </div>
       </div>
       <q-space />
@@ -23,7 +25,7 @@ const poll = inject(postInjectionKey) as Poll;
           v-for="tag in poll.tags"
           :key="tag"
           :label="'#' + tag"
-          :to="'/?tags=' + tag"
+          @click.stop="addTag(tag)"
           no-caps
           rounded
           class="q-ma-xs text-weight-bold"

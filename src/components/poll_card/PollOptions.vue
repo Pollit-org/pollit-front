@@ -12,13 +12,14 @@ const props = defineProps<Props>();
 
 const pollStore = usePollStore();
 const voteOptions = ref<object[]>([]);
-for (const option of props.poll.options) {
-  voteOptions.value.push({ label: option.title, value: option.id });
-}
+
 const selectedOption = ref<string | null>(null);
 
 const allOptionsVoteCountsAreZero = ref(true);
 onMounted(() => {
+  for (const option of props.poll.options) {
+  voteOptions.value.push({ label: option.title, value: option.id });
+}
   setTimeout(() => (allOptionsVoteCountsAreZero.value = false), 300);
 });
 

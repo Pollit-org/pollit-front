@@ -7,11 +7,12 @@ interface Props {
   pollId: string;
 }
 
-const props = defineProps<Props>();
+// eslint-disable-next-line vue/no-setup-props-destructure
+const {pollId} = defineProps<Props>();
 
 const pollStore = usePollStore();
 
-pollStore.setCurrentPoll(props.pollId);
+pollStore.setCurrentPoll(pollId);
 </script>
 
 <template>
