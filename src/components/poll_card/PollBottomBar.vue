@@ -21,6 +21,6 @@ const poll = inject(postInjectionKey) as Poll;
         >{{ poll.commentCount }}</span
       >
     </q-btn>
-    <q-btn round flat class="poll-share" icon="share" size="sm" />
+    <q-btn @click.stop="" round flat class="poll-share" icon="share" size="sm" />
   </q-card-actions>
 </template>
