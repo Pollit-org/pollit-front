@@ -31,7 +31,6 @@ const onVoteButtonClick = () => {
   if (selectedOption.value !== null) {
     pollStore.castVoteToPoll(props.poll.pollId, selectedOption.value);
   }
-  debugger;
   if (connectedUserStore.eventAfterSignIn !== null) {
     connectedUserStore.setEventAfterSignIn(null);
     viewPoll(props.poll.pollId);
