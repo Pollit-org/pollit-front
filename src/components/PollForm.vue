@@ -2,7 +2,11 @@
   <q-form
     @submit="submitForm"
     ref="pollForm"
-    @click="showSigninPopupIfNotConnected(() => {showPollFormContent = true})"
+    @click="
+      showSigninPopupIfNotConnected(() => {
+        showPollFormContent = true;
+      })
+    "
   >
     <q-card bordered>
       <q-input
@@ -97,7 +101,7 @@
 import { ref } from 'vue';
 import { usePollStore } from 'stores/poll-store';
 import { showSigninPopupIfNotConnected } from '../misc/ShowSigninPopupIfNotConnected';
-
+import { distance } from 'fastest-levenshtein';
 const pollStore = usePollStore();
 
 // POLL OPTIONS
@@ -122,18 +126,18 @@ const removeOption = (index: number) => {
 };
 
 const submitForm = () => {
-  pollStore.publishPoll(question.value, pollOptions.value, selectedTags.value)
+  pollStore.publishPoll(question.value, pollOptions.value, selectedTags.value);
 };
 
 // TAGS
 
 const selectedTags = ref([]);
 
-const existingTags: string[] = [];
+const existingTags: string[] = ['test1', 'test2', 'bonjour'];
 
 const filteredTags = ref(existingTags);
 
-const filterFn = (val, update) => {
+const filterFn = (val: string, update) => {
   if (val === '') {
     update(() => {
       filteredTags.value = existingTags;
@@ -143,7 +147,17 @@ const filterFn = (val, update) => {
 
   update(() => {
     const needle = val.toLowerCase();
-    filteredTags.value = existingTags.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+    // debugger;
+    const close_tag_tuples: [string, number][] = existingTags.map((e) => [
+      e,
+      distance(e.toLowerCase(), needle),
+    ]);
+    filteredTags.value = close_tag_tuples
+      .filter((e) => e[1] <= 3)
+      .sort((e1, e2) => e1[1] - e2[1])
+      .slice(0, 10)
+      .map((e) => e[0]);
+    return;
   });
 };
 

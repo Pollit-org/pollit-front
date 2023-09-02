@@ -26,6 +26,7 @@ interface ConnectedUserActions {
   ) => PromiseOrNot<void>;
   signinWithRefreshToken: (preventRouteChange?: boolean) => PromiseOrNot<void>;
   signinWithRefreshTokenIfAccessTokenExpiresSoon: () => PromiseOrNot<void>;
+  setEventAfterSignIn: (eventAfterSignIn: (() => void) | null) => void;
   setPermanentUserName: (userName: string) => PromiseOrNot<void>;
   setGender: (gender: string) => PromiseOrNot<void>;
   setBirthdate: (
@@ -49,6 +50,7 @@ interface ConnectedUserActions {
 
 interface ConnectedUserState {
   user: null | User;
+  eventAfterSignIn: (() => void) | null;
 }
 
 interface ConnectedUserGetters extends _GettersTree<ConnectedUserState> {
@@ -93,15 +95,16 @@ async function handleSuccessfulSignIn(
   accessToken: string,
   refreshToken: string
 ) {
+  closeSigninPopup();
   this.user = buildUser(accessToken, refreshToken);
-  closeSigninPopup()
   if (this.user.claims.HasTemporaryUserName == 'True') {
     this.router.push({ name: 'SetPermanentUserName' });
+  } else if (this.eventAfterSignIn !== null) {
+    this.eventAfterSignIn();
   } else {
     this.router.go(0);
   }
 }
-
 
 export type ConnectedUserStore = Store<
   string,
@@ -119,6 +122,7 @@ export const useConnectedUserStore = defineStore<
   state: () => {
     return {
       user: null,
+      eventAfterSignIn: null,
     };
   },
   persist: {
@@ -204,18 +208,12 @@ export const useConnectedUserStore = defineStore<
               refreshToken: this.user?.refreshToken,
             })
           ).data;
-          this.user = buildUser(accessToken, refreshToken);
+          await handleSuccessfulSignIn.call(this, accessToken, refreshToken);
         } catch (e) {
           this.user = null;
           if (!preventRouteChange) this.router.push({ name: 'Signin' });
           return;
         }
-
-        if (
-          this.user.claims.HasTemporaryUserName == 'True' &&
-          !preventRouteChange
-        )
-          this.router.push({ name: 'SetPermanentUserName' });
       });
     },
     async signinWithRefreshTokenIfAccessTokenExpiresSoon() {
@@ -231,6 +229,9 @@ export const useConnectedUserStore = defineStore<
       if (minutesUntilAccessTokenExpires < 5) {
         await this.signinWithRefreshToken();
       }
+    },
+    setEventAfterSignIn(eventAfterSignIn: (() => void) | null) {
+      this.eventAfterSignIn = eventAfterSignIn;
     },
     setPermanentUserName(userName: string) {
       return usingLoaderAsync(async () => {

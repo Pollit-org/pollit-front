@@ -2,10 +2,9 @@
 import { ref, watch } from 'vue';
 import PollCard from './poll_card/PollCard.vue';
 import PollForm from './PollForm.vue';
-import Router from 'src/router';
 import { usePollStore } from 'src/stores/poll-store';
-import { Poll } from 'src/api/models/poll';
 import { QInfiniteScroll } from 'quasar';
+import { viewPoll } from 'src/misc/viewPoll';
 
 interface Props {
   search?: string;
@@ -13,22 +12,12 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {});
-
 const pollStore = usePollStore();
-
-const viewPoll = (poll: Poll) => {
-  Router.push({
-    name: 'Poll',
-    params: {
-      pollId: poll.pollId,
-    },
-  });
-};
 
 const setFilters = () =>
   pollStore.setFilters({
     search: props.search ?? null,
-    tags: props.tags?.split(' ') ?? null,
+    tags: props.tags?.split('+') ?? null,
   });
 
 const onPropsChanged = () => {
@@ -59,7 +48,7 @@ const onLoadRef = (index: number, done: (stop?: boolean) => void) => {
         :key="poll.pollId + poll.hasMyVote + poll.totalVotesCount"
         :poll="poll"
         class="cursor-pointer"
-        @click="viewPoll(poll)"
+        @click="viewPoll(poll.pollId)"
       />
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
