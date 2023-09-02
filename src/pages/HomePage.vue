@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {});
   <pollit-page :has-back-button="false">
     <div v-if="props.tags" class="q-mt-md wrap">
       <q-chip
-        v-for="tag in props.tags?.split(' ')"
+        v-for="tag in props.tags?.split('+')"
         :key="tag"
         removable
         @remove="removeTag(tag)"

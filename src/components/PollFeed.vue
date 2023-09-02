@@ -28,7 +28,7 @@ const viewPoll = (poll: Poll) => {
 const setFilters = () =>
   pollStore.setFilters({
     search: props.search ?? null,
-    tags: props.tags?.split(' ') ?? null,
+    tags: props.tags?.split('+') ?? null,
   });
 
 const onPropsChanged = () => {
