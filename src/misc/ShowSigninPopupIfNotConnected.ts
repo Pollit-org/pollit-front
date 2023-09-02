@@ -6,6 +6,7 @@ const showSigninPopup = ref(false);
 const showSigninPopupIfNotConnected = (eventHandler: () => void) => {
   const connectedUserStore = useConnectedUserStore();
   if (connectedUserStore.user == null) {
+    connectedUserStore.setEventAfterSignIn(eventHandler);
     showSigninPopup.value = true;
   } else {
     eventHandler();

@@ -3,7 +3,9 @@ import moment from 'moment';
 import { Comment } from 'src/api/models/comment';
 import { usePollStore } from 'src/stores/poll-store';
 import { ref } from 'vue';
-import {showSigninPopupIfNotConnected} from 'src/misc/ShowSigninPopupIfNotConnected'
+import { showSigninPopupIfNotConnected } from 'src/misc/ShowSigninPopupIfNotConnected';
+import { useConnectedUserStore } from 'src/stores/connected-user-store';
+import { viewPoll } from 'src/misc/viewPoll';
 
 interface Props {
   pollId: string;
@@ -12,20 +14,22 @@ interface Props {
 }
 
 const pollStore = usePollStore();
-
+const connectedUserStore = useConnectedUserStore();
 const currentReply = ref<string | null>(null);
-const showReplyInput = ref<boolean>(false)
+const showReplyInput = ref<boolean>(false);
 
-const toggleReplyInput = () => (showReplyInput.value = !showReplyInput.value);
+const toggleReplyInput = () => {
+  if (connectedUserStore.eventAfterSignIn !== null) {
+    connectedUserStore.setEventAfterSignIn(null);
+    viewPoll(props.pollId);
+  }
+  showReplyInput.value = !showReplyInput.value;
+};
 
 const postReply = () => {
   if (currentReply.value == null) return;
 
-  pollStore.postCommentOnPoll(
-    props.pollId,
-    props.comment.id,
-    currentReply.value
-  );
+  pollStore.postCommentOnPoll(props.pollId, props.comment.id, currentReply.value);
 };
 
 const props = defineProps<Props>();
@@ -40,12 +44,7 @@ const props = defineProps<Props>();
     class="q-pb-md d-flex"
   >
     <template v-slot:header>
-      <q-icon
-        name="account_circle"
-        class="q-pr-sm"
-        size="sm"
-        color="primary"
-      ></q-icon>
+      <q-icon name="account_circle" class="q-pr-sm" size="sm" color="primary"></q-icon>
       <div class="text-weight-small q-pa-none q-ma-none">
         {{ props.comment.author }} ·
         <span class="text-weight-light text-italic text-caption">{{
@@ -82,14 +81,7 @@ const props = defineProps<Props>();
                 @click="currentReply = null"
                 class="cursor-pointer"
               />
-              <q-btn
-                type="submit"
-                @click="postReply"
-                round
-                dense
-                flat
-                icon="send"
-              />
+              <q-btn type="submit" @click="postReply" round dense flat icon="send" />
             </template>
           </q-input>
         </q-form>

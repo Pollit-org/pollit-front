@@ -4,15 +4,16 @@ import { Comment } from 'src/api/models/comment';
 import { ref } from 'vue';
 import { usePollStore } from 'src/stores/poll-store';
 import { showSigninPopupIfNotConnected } from 'src/misc/ShowSigninPopupIfNotConnected';
+import { useConnectedUserStore } from 'src/stores/connected-user-store';
+import { viewPoll } from 'src/misc/viewPoll';
 
 interface Props {
   pollId: string;
   comments: Comment[];
 }
 const props = defineProps<Props>();
-
 const pollStore = usePollStore();
-
+const connectedUserStore = useConnectedUserStore();
 const currentComment = ref('');
 
 const postComment = () => {
@@ -24,7 +25,12 @@ const postComment = () => {
 <template>
   <q-card class="q-mb-xs">
     <q-card-section>
-      <q-form @submit="postComment" @click="showSigninPopupIfNotConnected(() => {})">
+      <q-form @submit="postComment" @click="showSigninPopupIfNotConnected(() => {
+            if (connectedUserStore.eventAfterSignIn !== null) {
+              connectedUserStore.setEventAfterSignIn(null);
+              viewPoll(props.pollId);
+            }
+          })">
         <q-input
           label="What's on your mind ?"
           v-model.trim="currentComment"

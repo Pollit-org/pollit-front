@@ -4,6 +4,7 @@ import { Poll, PollDetailedResults } from 'src/api/models/poll';
 import { Comment } from 'src/api/models/comment';
 import { axiosPollit } from 'src/axios';
 import { usingLoaderAsync } from 'src/misc/usingLoader';
+import { viewPoll } from 'src/misc/viewPoll';
 
 export interface PollFeedFilters {
   search: string | null;
@@ -160,7 +161,7 @@ export const usePollStore = defineStore<
             tags: tags,
           })
         ).data;
-        this.router.push({ name: 'Poll', params: { pollId: res.pollId } });
+        viewPoll(res.pollId);
       });
     },
     async castVoteToPoll(pollId: string, optionId: string) {
