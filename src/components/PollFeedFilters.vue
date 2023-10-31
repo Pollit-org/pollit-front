@@ -56,7 +56,7 @@ const onTopFilterChanged = async (topFilter: { label: string, value: number }) =
 };
 
 const setOrderBy = async (orderBy: number) => {
-  pollStore.resetPaging();
+  pollStore.reset();
   pollStore.setFilters(Object.assign(pollStore.filters, { orderBy: orderBy }));
   await pollStore.fetchMore();
 }
