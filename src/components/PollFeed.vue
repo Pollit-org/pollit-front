@@ -5,6 +5,7 @@ import PollForm from './PollForm.vue';
 import { usePollStore } from 'src/stores/poll-store';
 import { QInfiniteScroll } from 'quasar';
 import { viewPoll } from 'src/misc/viewPoll';
+import PollFeedFilters from './PollFeedFilters.vue';
 
 interface Props {
   search?: string;
@@ -15,10 +16,11 @@ const props = withDefaults(defineProps<Props>(), {});
 const pollStore = usePollStore();
 
 const setFilters = () =>
-  pollStore.setFilters({
-    search: props.search ?? null,
-    tags: props.tags?.split('+') ?? null,
-  });
+  pollStore.setFilters(
+    Object.assign(pollStore.filters, {
+      search: props.search ?? null,
+      tags: props.tags?.split(' ') ?? null,
+  }));
 
 const onPropsChanged = () => {
   pollStore.reset();
@@ -42,6 +44,7 @@ const onLoadRef = (index: number, done: (stop?: boolean) => void) => {
 <template>
   <div>
     <poll-form class="q-pt-sm" />
+    <poll-feed-filters class="q-pt-md q-pb-none"></poll-feed-filters>
     <q-infinite-scroll ref="infiniteScroll" @load="onLoadRef" :offset="250">
       <poll-card
         v-for="poll in pollStore.$state.polls"

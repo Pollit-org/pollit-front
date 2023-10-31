@@ -25,14 +25,21 @@ body.body--dark {
   background: #1c1c1c;
 }
 
-  .text-banner {
-    color: $banner;
-  }
-  .bg-banner {
-    background: $banner;
-  }
+.text-banner {
+  color: $banner;
+}
+.bg-banner {
+  background: $banner;
+}
 
-  .no-link-style {
-    text-decoration: none; 
-    color: inherit !important;
-  }
+.text-disabled {
+  color: $disabled;
+}
+.bg-disabled {
+  background: $disabled;
+}
+
+.no-link-style {
+  text-decoration: none;
+  color: inherit !important;
+}

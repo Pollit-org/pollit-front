@@ -9,6 +9,9 @@ import { viewPoll } from 'src/misc/viewPoll';
 export interface PollFeedFilters {
   search: string | null;
   tags: string[] | null;
+  orderBy: number;
+  order: number;
+  createdAfter: string | null;
 }
 
 interface PollStoreActions {
@@ -17,7 +20,12 @@ interface PollStoreActions {
   refreshPoll: (id: string) => Promise<void>;
   setFilters: (filters: PollFeedFilters) => void;
   reset: () => void;
-  publishPoll: (title: string, pollOptions: string[], tags: string[]) => Promise<void>;
+  resetPaging: () => void;
+  publishPoll: (
+    title: string,
+    pollOptions: string[],
+    tags: string[]
+  ) => Promise<void>;
   castVoteToPoll: (pollId: string, optionId: string) => Promise<void>;
   postCommentOnPoll: (
     pollId: string,
@@ -39,7 +47,12 @@ interface PollStoreState {
 
 type PollStoreGetters = _GettersTree<PollStoreState>;
 
-export type PollStore = Store<string, PollStoreState, PollStoreGetters, PollStoreActions>;
+export type PollStore = Store<
+  string,
+  PollStoreState,
+  PollStoreGetters,
+  PollStoreActions
+>;
 
 const buildDefaultState = () => {
   return {
@@ -53,6 +66,9 @@ const buildDefaultState = () => {
     filters: {
       search: null,
       tags: null,
+      orderBy: 1,
+      order: -1,
+      createdAfter: null,
     },
   };
 };
@@ -71,16 +87,20 @@ export const usePollStore = defineStore<
       if (this.currentPage == null) this.currentPage = 0;
       else this.currentPage += 1;
 
-      let url = `polls/feed?page=${this.currentPage}&pageSize=20`;
+      let url = `polls/feed?page=${this.currentPage ?? 0}&pageSize=20`;
       if (this.filters.tags != null && this.filters.tags?.length > 0) {
         this.filters.tags.forEach((tag) => {
           url += '&tags=' + tag;
         });
       }
-      if (this.filters.search == null) {
-        url += '&orderBy=createdAt&order=descending';
-      } else {
+      if (this.filters.search != null) {
         url += '&search=' + this.filters.search;
+      } else {
+        url += '&orderBy=' + this.filters.orderBy;
+        url += '&order=' + this.filters.order;
+        if (this.filters.createdAfter != null) {
+          url += '&createdAfter=' + this.filters.createdAfter;
+        }
       }
 
       const { items, options, hasNextPage } = (await axiosPollit.get(url)).data;
@@ -100,8 +120,8 @@ export const usePollStore = defineStore<
 
         this.currentPoll =
           this.polls?.filter((p) => p.pollId == id)?.[0] ??
-          (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`)).data
-            .items?.[0] ??
+          (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`))
+            .data.items?.[0] ??
           null;
         this.currentPoll?.options.sort(sortOptionsAscending);
 
@@ -113,10 +133,14 @@ export const usePollStore = defineStore<
           this.currentPollComments = (await getCommentsAsync).data.items;
         } catch (e) {}
 
-        const getDetailedPollResultsAsync = axiosPollit.get(`polls/${id}/results`);
+        const getDetailedPollResultsAsync = axiosPollit.get(
+          `polls/${id}/results`
+        );
 
         try {
-          this.currentPollDetailedResults = (await getDetailedPollResultsAsync).data;
+          this.currentPollDetailedResults = (
+            await getDetailedPollResultsAsync
+          ).data;
           this.currentPollDetailedResults?.options.sort(sortOptionsAscending);
         } catch (e) {}
 
@@ -128,8 +152,8 @@ export const usePollStore = defineStore<
     },
     async refreshPoll(id: string) {
       const refreshedPoll =
-        (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`)).data
-          .items?.[0] ?? null;
+        (await axiosPollit.get(`polls/feed?page=0&pageSize=1&pollId=${id}`))
+          .data.items?.[0] ?? null;
 
       if (!refreshedPoll) return;
 
@@ -151,6 +175,11 @@ export const usePollStore = defineStore<
     },
     reset() {
       this.$state = buildDefaultState();
+    },
+    resetPaging() {
+      this.$state.currentPage = null;
+      this.$state.hasNextPage = true;
+      this.$state.polls = null;
     },
     publishPoll(title: string, pollOptions: string[], tags: string[]) {
       return usingLoaderAsync(async () => {
