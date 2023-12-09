@@ -171,14 +171,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <q-card-section class="text-h6 q-pt-none q-pb-none">
+  <q-card-section
+    style="border: 1px solid rgb(180, 180, 180); border-width: 1px 0"
+    class="q-py-sm q-px-none"
+  >
     <div class="chart-container" style="position: relative; min-height: 200px">
       <canvas :id="pollChartId"></canvas>
     </div>
-    <span v-for="chartFeature of Object.values(chartFeatures)" :key="chartFeature.displayName">
+    <span
+      v-for="chartFeature of Object.values(chartFeatures)"
+      :key="chartFeature.displayName"
+    >
       <q-btn
         dense
-        size="0.7rem"
+        size="0.65rem"
         :label="chartFeature.displayName"
         :text-color="chartFeature.color"
         outline

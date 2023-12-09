@@ -8,7 +8,7 @@
       })
     "
   >
-    <q-card bordered>
+    <q-card class="shadow-1">
       <q-input
         dense
         autogrow

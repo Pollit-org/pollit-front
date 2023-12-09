@@ -1,11 +1,5 @@
 <template>
-  <q-btn
-    icon="arrow_back"
-    class="q-mt-md q-ml-xl"
-    v-if="hasBackButton"
-    @click="goBack"
-  />
-  <q-page class="flex justify-center">
+  <q-page class="column items-center bg-blue-grey-1">
     <div
       :class="
         (props.verticalCenter || showSpinner ? 'self-center ' : '') +
@@ -13,6 +7,13 @@
       "
       :style="'width: 95%; max-width:' + props.maxWidth"
     >
+      <q-btn
+        icon="arrow_back"
+        v-if="hasBackButton"
+        @click="goBack"
+        class="q-my-sm bg-white"
+        size="sm"
+      />
       <error-not-found v-if="is404"></error-not-found>
       <div v-else-if="showSpinner" class="flex justify-center self-center">
         <p-spinner class="self-center"></p-spinner>
@@ -40,7 +41,7 @@ export interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   verticalCenter: false,
-  maxWidth: '650px',
+  maxWidth: '700px',
   showSpinnerOnLoad: true,
   is404: false,
   hasBackButton: true,

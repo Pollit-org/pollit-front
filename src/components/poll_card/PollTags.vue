@@ -2,7 +2,6 @@
 import { Poll } from 'src/api/models/poll';
 import { inject } from 'vue';
 import { postInjectionKey } from './injection_keys';
-import moment from 'moment';
 import { addTag } from 'src/misc/filterTags';
 
 const poll = inject(postInjectionKey) as Poll;
@@ -31,10 +30,18 @@ function getRandomPastelColor() {
 
 <template>
   <q-card-section>
-      {{ poll.author }}
-      <span class="q-mx-xs">&centerdot;</span>
-      <span class="text-italic text-caption" style="font-size: 0.7rem; color: rgb(150, 150, 150) ;">
-        {{ moment(poll.createdAt).fromNow() }}
-      </span>
+      <q-btn
+        v-for="tag in poll.tags"
+        :key="tag"
+        :label="'#' + tag"
+        @click.stop="addTag(tag)"
+        dense
+        flat
+        no-wrap
+        no-caps
+        size="xs"
+        class="underline-hover q-mr-xs no-padding"
+        :style="{ 'font-size': '0.75rem', 'color': getRandomPastelColor() }"
+      />
   </q-card-section>
 </template>
