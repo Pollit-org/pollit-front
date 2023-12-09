@@ -3,6 +3,7 @@ import PollBottomBar from './PollBottomBar.vue';
 import PollOptions from './PollOptions.vue';
 import PollTitle from './PollTitle.vue';
 import PollHeader from './PollHeader.vue';
+import PollTags from './PollTags.vue';
 import { provide } from 'vue';
 import PollResults from './PollResults.vue'
 import { postInjectionKey } from './injection_keys';
@@ -20,12 +21,13 @@ provide(postInjectionKey, poll);
 <template >
   <q-card
     :key="poll.pollId + poll.hasMyVote + poll.totalVotesCount"
-    class="q-mt-md q-mt-md bg-white"
+    class="q-pt-sm q-px-md shadow-1"
   >
-    <poll-header class="q-pb-none"/>
-    <poll-title />
-    <poll-options :poll="poll" v-if="!poll.hasMyVote"/>
-    <poll-results :poll="poll" v-if="poll.hasMyVote"/>
-    <poll-bottom-bar style="z-index: -1" />
+    <poll-header class="no-padding"/>
+    <poll-title class="no-padding q-mb-xs"/>
+    <poll-tags class="no-padding" />
+    <poll-options class="q-mb-xs" :poll="poll" v-if="!poll.hasMyVote"/>
+    <poll-results class="q-mb-xs" :poll="poll" v-if="poll.hasMyVote"/>
+    <poll-bottom-bar class="no-padding"/>
   </q-card>
 </template>

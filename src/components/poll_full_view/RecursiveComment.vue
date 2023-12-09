@@ -100,7 +100,6 @@ const props = defineProps<Props>();
       </q-card-section>
     </q-card>
   </q-expansion-item>
-  <!-- <q-separator v-if="isRoot" class="q-my-sm"></q-separator> -->
 </template>
 
 <style>

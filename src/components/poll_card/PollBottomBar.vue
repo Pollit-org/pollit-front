@@ -8,19 +8,19 @@ const poll = inject(postInjectionKey) as Poll;
 </script>
 
 <template>
-  <q-card-actions class="row justify-between q-pb-xs">
+  <q-card-actions class="row justify-between" style="color: rgb(80, 80, 80) ;">
     <div class="row items-center inline">
-      <q-icon name="o_poll" size="1.2rem" class="q-mr-xs" />
-      <span class="poll-votes text-weight-bold" style="font-size: 0.8rem">{{
+      <q-icon name="o_poll" size="1.1rem" class="q-mr-xs" />
+      <span class="poll-votes text-weight-bold" style="font-size: 0.8rem; font-weight: 500;">{{
         poll.totalVotesCount
       }}</span>
     </div>
-    <q-btn flat class="row items-center">
+    <q-btn flat dense no-wrap class="row items-center">
       <q-icon name="o_forum" size="1rem" class="q-mr-xs" />
-      <span class="poll-comments" style="font-size: 0.7rem"
+      <span class="poll-comments" style="font-size: 0.8rem; font-weight: 500;"
         >{{ poll.commentCount }}</span
       >
     </q-btn>
-    <q-btn @click.stop="" round flat class="poll-share" icon="share" size="sm" />
+    <q-btn @click.stop="" flat dense no-wrap class="poll-share" icon="share" size="0.7rem" />
   </q-card-actions>
 </template>

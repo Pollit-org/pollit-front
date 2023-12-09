@@ -41,10 +41,10 @@ const onVoteButtonClick = () => {
 <template>
   <q-card-section
     :key="poll.pollId + poll.hasMyVote + poll.totalVotesCount"
-    class="poll-options"
+    class="q-py-sm  q-px-none"
   >
     <q-option-group
-      class="q-pb-sm"
+      class="q-mb-sm"
       :options="voteOptions"
       type="radio"
       v-model="selectedOption"

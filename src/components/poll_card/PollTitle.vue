@@ -7,7 +7,7 @@ const poll = inject(postInjectionKey) as Poll;
 </script>
 
 <template>
-  <q-card-section class="text-h6 q-pt-none q-pb-none">{{
+  <q-card-section style="font-size: 1.2rem; font-weight: 500;">{{
     poll.title
   }}</q-card-section>
 </template>
