@@ -172,7 +172,6 @@ onMounted(() => {
 
 <template>
   <q-card-section
-    style="border: 1px solid rgb(180, 180, 180); border-width: 1px 0"
     class="q-py-sm q-px-none"
   >
     <div class="chart-container" style="position: relative; min-height: 200px">

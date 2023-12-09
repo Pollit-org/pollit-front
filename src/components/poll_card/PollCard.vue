@@ -24,7 +24,7 @@ provide(postInjectionKey, poll);
     class="q-pt-sm q-px-md shadow-1"
   >
     <poll-header class="no-padding"/>
-    <poll-title class="no-padding"/>
+    <poll-title class="no-padding q-mb-xs"/>
     <poll-tags class="no-padding" />
     <poll-options class="q-mb-xs" :poll="poll" v-if="!poll.hasMyVote"/>
     <poll-results class="q-mb-xs" :poll="poll" v-if="poll.hasMyVote"/>

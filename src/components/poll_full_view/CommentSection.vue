@@ -23,8 +23,8 @@ const postComment = () => {
 };
 </script>
 <template>
-  <q-card class="q-mb-xs">
-    <q-card-section>
+  <q-card class="q-mb-xs shadow-1 q-px-md q-py-sm">
+    <q-card-section class="q-pa-none">
       <q-form @submit="postComment" @click="showSigninPopupIfNotConnected(() => {
             if (connectedUserStore.eventAfterSignIn !== null) {
               connectedUserStore.setEventAfterSignIn(null);
@@ -32,6 +32,7 @@ const postComment = () => {
             }
           })">
         <q-input
+          dense
           label="What's on your mind ?"
           v-model.trim="currentComment"
           type="textarea"
@@ -50,8 +51,8 @@ const postComment = () => {
       </q-form>
     </q-card-section>
   </q-card>
-  <q-card v-for="(comment, index) in props.comments" :key="index"
-    ><q-card-section class="q-mb-xs"
+  <q-card v-for="(comment, index) in props.comments" :key="index" class="q-mb-xs shadow-1 q-px-sm q-py-xs"
+    ><q-card-section class="q-pa-none"
       ><recursive-comment
         :poll-id="pollId"
         :is-root="true"
